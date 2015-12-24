@@ -1,0 +1,226 @@
+drop PROCEDURE if exists createGeneralStatistics;
+drop PROCEDURE if exists createNewConceptStatistics;
+drop PROCEDURE if exists createRetiredConceptStatistics;
+drop PROCEDURE if exists createChangedConceptStatistics;
+
+DROP TABLE IF EXISTS testtime;
+
+CREATE TABLE testtime (  
+	ID tinyint,  
+	indicator varchar(100), 
+	eventDate TIMESTAMP);
+	
+drop table if exists s_statedrootdesc;
+create text table s_statedrootdesc(
+	sourceId bigint);
+						
+drop table if exists s_concepts_pre;
+  	
+create text table s_concepts_pre (id bigint NOT NULL,
+active tinyint NOT NULL ,
+definitionStatusId bigint NOT NULL );
+  	
+drop table if exists s_concepts;
+
+create text table s_concepts (id bigint NOT NULL,
+  active tinyint NOT NULL ,
+  definitionStatusId bigint NOT NULL );
+ 
+drop table if exists  s_descriptions;
+create text table s_descriptions (
+  effectiveTime integer NOT NULL ,
+  active tinyint NOT NULL ,
+  conceptId bigint NOT NULL ,
+  typeId bigint NOT NULL,
+  term varchar(255) NOT NULL );
+ 
+drop table if exists  s_statedrels;
+CREATE text TABLE s_statedrels (
+	sourceId bigint NOT NULL,
+  	effectiveTime integer NOT NULL ,
+  	active tinyint NOT NULL );
+ 
+drop table if exists s_relationships ;
+CREATE text TABLE s_relationships (
+	sourceId bigint NOT NULL,
+  	effectiveTime integer NOT NULL ,
+  	active tinyint NOT NULL );
+ 
+drop table if exists s_attributevalues  ;
+CREATE text TABLE s_attributevalues ( refSetId bigint NOT NULL,
+  referencedComponentId bigint NOT NULL ,
+  valueId bigint NOT NULL);
+ 
+drop table if exists s_tclosure_stated ;
+create text table s_tclosure_stated (
+	descendant bigint NOT NULL,
+  	ancestor bigint NOT NULL );
+  
+drop table if exists  s_tclosure_stated_pre;
+create text table s_tclosure_stated_pre(
+	descendant bigint NOT NULL,
+  	ancestor bigint NOT NULL );  	
+ 
+drop table if exists CPTROOTLEVEL ;
+  	CREATE TABLE CPTROOTLEVEL (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		CONCEPTS INTEGER,
+		PERCENTOFTOTAL DECIMAL(5 , 2),
+		PERCENTOFSD DECIMAL(5 , 2),
+		DESCRIPTIONS INTEGER,
+		RELATIONSHIPS INTEGER
+	);
+
+drop table if exists  CPTFIRSTLEVEL;
+CREATE TABLE CPTFIRSTLEVEL (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		CONCEPTS INTEGER,
+		PERCENTOFTOTAL DECIMAL(5 , 2),
+		PERCENTOFSD DECIMAL(5 , 2),
+		DESCRIPTIONS INTEGER,
+		RELATIONSHIPS INTEGER
+	);
+  
+drop table if exists  newConcepts;
+create table newConcepts (id bigint NOT NULL,
+  active tinyint NOT NULL ,
+  definitionStatusId bigint NOT NULL );
+  
+drop table if exists  CPTROOTLEVEL_TABLE2;
+CREATE TABLE CPTROOTLEVEL_TABLE2 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		NEWCONCEPTS INTEGER,
+		PERCENTOFTOTAL DECIMAL(5 , 2),
+		PERCENTOFALLNEW DECIMAL(5 , 2),
+		PERCENTOFNEWSD DECIMAL(5 , 2),
+		PERCENTOFNEWP DECIMAL(5 , 2)
+	);
+
+drop table if exists CPTFIRSTLEVEL_TABLE2 ;
+CREATE TABLE CPTFIRSTLEVEL_TABLE2 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		NEWCONCEPTS INTEGER,
+		PERCENTOFHIERARCHY DECIMAL(5 , 2),
+		PERCENTOFALLNEW DECIMAL(5 , 2),
+		PERCENTOFNEWSD DECIMAL(5 , 2),
+		PERCENTOFNEWP DECIMAL(5 , 2)
+	);
+
+drop table if exists retConcepts ;	
+create table retConcepts (id bigint  );
+  
+drop table if exists  CPTROOTLEVEL_TABLE3;
+CREATE TABLE CPTROOTLEVEL_TABLE3 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		RETIREDCONCEPTS INTEGER,
+		PERCENTOFTOTAL DECIMAL(5 , 2),
+		PERCENTOFALLRETIRED DECIMAL(5 , 2),
+		PERCENTOFAMBIGUOUS DECIMAL(5 , 2),
+		PERCENTOFDUPLICATED DECIMAL(5 , 2),
+		PERCENTOFERRONEOUS DECIMAL(5 , 2),
+		PERCENTOFNOTSTATED DECIMAL(5 , 2),
+		PERCENTOFOUTDATED DECIMAL(5 , 2),
+		PERCENTOFMOVED DECIMAL(5 , 2),
+		PERCENTOFLIMITED DECIMAL(5 , 2)
+	);
+
+drop table if exists  CPTFIRSTLEVEL_TABLE3;
+CREATE TABLE CPTFIRSTLEVEL_TABLE3 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		RETIREDCONCEPTS INTEGER,
+		PERCENTOFHIERARCHY DECIMAL(5 , 2),
+		PERCENTOFALLRETIRED DECIMAL(5 , 2),
+		PERCENTOFAMBIGUOUS DECIMAL(5 , 2),
+		PERCENTOFDUPLICATED DECIMAL(5 , 2),
+		PERCENTOFERRONEOUS DECIMAL(5 , 2),
+		PERCENTOFNOTSTATED DECIMAL(5 , 2),
+		PERCENTOFOUTDATED DECIMAL(5 , 2),
+		PERCENTOFMOVED DECIMAL(5 , 2),
+		PERCENTOFLIMITED DECIMAL(5 , 2)
+	);
+
+drop table if exists actConcepts ;
+create table actConcepts (id bigint NOT NULL,
+  definitionStatusId bigint NOT NULL );
+
+drop table if exists  CPTROOTLEVEL_TABLE4;
+CREATE TABLE CPTROOTLEVEL_TABLE4 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		ANYCHANGE INTEGER,
+		STATEDDEFCHANGE INTEGER,
+		INFERREDDEFCHANGE INTEGER,
+		PRIMITIVE2SD INTEGER,
+		SD2PRIMITIVE INTEGER,
+		DESCRIPTIONCHANGE INTEGER,
+		FSNCHANGE INTEGER
+	);
+
+drop table if exists STATEDCHANGES ;
+create table STATEDCHANGES (id bigint  );
+
+drop table if exists  INFERREDCHANGES;
+create table INFERREDCHANGES (id bigint  );
+
+drop table if exists SD2PRIM ;
+create table SD2PRIM (id bigint  );
+  
+drop table if exists  PRIM2SD;
+create table PRIM2SD (id bigint  );
+  
+drop table if exists DESCCH ;
+create table DESCCH (id bigint  );
+
+drop table if exists  FSNCH;
+create table FSNCH (id bigint  );
+  
+drop table if exists  ANYCH;
+create table ANYCH (id bigint  );
+
+DROP TABLE if exists CPTFIRSTLEVEL_TABLE4;
+
+CREATE TABLE CPTFIRSTLEVEL_TABLE4 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		ANYCHANGE INTEGER,
+		STATEDDEFCHANGE INTEGER,
+		INFERREDDEFCHANGE INTEGER,
+		PRIMITIVE2SD INTEGER,
+		SD2PRIMITIVE INTEGER,
+		DESCRIPTIONCHANGE INTEGER,
+		FSNCHANGE INTEGER
+	);
+
+DROP TABLE if exists CPTROOTLEVEL_TABLE5;
+
+CREATE TABLE CPTROOTLEVEL_TABLE5 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		PERCOFANYCHANGE DECIMAL(5 , 2),
+		PERCOFSTATEDDEFCHANGE DECIMAL(5 , 2),
+		PERCOFINFERREDDEFCHANGE DECIMAL(5 , 2),
+		PERCOFPRIMITIVE2SD DECIMAL(5 , 2),
+		PERCOFSD2PRIMITIVE DECIMAL(5 , 2),
+		PERCOFDESCRIPTIONCHANGE DECIMAL(5 , 2),
+		PERCOFFSNCHANGE DECIMAL(5 , 2)
+	);
+
+DROP TABLE if exists CPTFIRSTLEVEL_TABLE5;
+
+CREATE TABLE CPTFIRSTLEVEL_TABLE5 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		PERCOFANYCHANGE DECIMAL(5 , 2),
+		PERCOFSTATEDDEFCHANGE DECIMAL(5 , 2),
+		PERCOFINFERREDDEFCHANGE DECIMAL(5 , 2),
+		PERCOFPRIMITIVE2SD DECIMAL(5 , 2),
+		PERCOFSD2PRIMITIVE DECIMAL(5 , 2),
+		PERCOFDESCRIPTIONCHANGE DECIMAL(5 , 2),
+		PERCOFFSNCHANGE DECIMAL(5 , 2)
+	);

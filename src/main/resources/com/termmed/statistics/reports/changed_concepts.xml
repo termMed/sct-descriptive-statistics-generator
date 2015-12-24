@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<reportConfig>
+	<inputFile>STATEDROOTDESC</inputFile>
+	<inputFile>CONCEPTS</inputFile>
+	<inputFile>CONCEPTS_PREVIOUS</inputFile>
+	<inputFile>DESCRIPTIONS</inputFile>
+	<inputFile>STATEDRELS</inputFile>
+	<inputFile>RELATIONSHIPS</inputFile>
+	<inputFile>TCLOSURESTATED</inputFile>
+	<storedProcedure>
+		<name>createChangedConceptStatistics(?)</name>
+		<param><name>releaseDate</name><order>1</order><sqlType>INT</sqlType></param>
+	</storedProcedure>
+	<outputFile>
+	<file>output/ChangedConceptStatistics</file>
+	<reportHeader>id,term,AnyChange,StatedDefChange,InferredDefChange,Primitive2SD,SD2Primitive,DescriptionChange,FSNChange</reportHeader>
+	<select>
+	<tableName>cptRootLevel_table4</tableName>
+	</select>
+	<select>
+	<tableName>cptFirstLevel_table4</tableName>
+	</select>
+	</outputFile>
+	<outputFile>
+	<file>output/ChangedConceptStatisticsPercentual</file>
+	<reportHeader>id,term,PercOfAnyChange,PercOfStatedDefChange,PercOfInferredDefChange,PercOfPrimitive2SD,PercOfSD2Primitive,PercOfDescriptionChange,PercOfFSNChange</reportHeader>
+	<select>
+	<tableName>cptRootLevel_table5</tableName>
+	</select>
+	<select>
+	<tableName>cptFirstLevel_table5</tableName>
+	</select>
+	</outputFile>
+</reportConfig>

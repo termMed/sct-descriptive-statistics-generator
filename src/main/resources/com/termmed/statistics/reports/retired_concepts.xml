@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<reportConfig>
+	<inputFile>STATEDROOTDESC</inputFile>
+	<inputFile>CONCEPTS</inputFile>
+	<inputFile>DESCRIPTIONS</inputFile>
+	<inputFile>ATTRIBUTEVALUES</inputFile>
+	<inputFile>TCLOSURESTATED_PREVIOUS</inputFile>
+	<storedProcedure>
+		<name>createRetiredConceptStatistics()</name>
+	</storedProcedure>
+	<outputFile>
+	<file>output/RetiredStatistics</file>
+	<reportHeader>id,term,RetiredConcepts,PercentOfTotal,PercentOfAllRetired,PercentOfAmbiguous,PercentOfDuplicated,PercentOfErroneous,PercentOfNotStated,PercentOfOutdated,PercentOfMoved,PercentOfLimited</reportHeader>
+	<select>
+	<tableName>cptRootLevel_table3</tableName>
+	</select>
+	<select>
+	<tableName>cptFirstLevel_table3</tableName>
+	</select>
+	</outputFile>
+</reportConfig>

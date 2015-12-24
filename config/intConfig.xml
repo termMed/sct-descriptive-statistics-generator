@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<releaseFolder>/Users/ar/Downloads/SnomedCT_RF2Release_INT_20160131/Full</releaseFolder>
+	<releaseDate>20160131</releaseDate>
+	<previousReleaseDate>20150731</previousReleaseDate>
+	<reports>
+		<general>true</general>
+		<new_concepts>true</new_concepts>
+		<retired_concepts>true</retired_concepts>
+		<changed_concepts>true</changed_concepts>
+	</reports>
+	<sp_params>
+		<releaseDate>20160131</releaseDate>
+	</sp_params>
+</config>

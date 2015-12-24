@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d Stats - %m%n"/>
+		</layout>
+	</appender>
+	<appender name="A1" class="org.apache.log4j.RollingFileAppender">
+		<param name="file" value="logs/statistics.log"/>
+		<param name="MaxFileSize" value="100MB"/>
+		<param name="MaxBackupIndex" value="25"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %c - %m%n"/>
+		</layout>
+	</appender>
+	<logger name="com.termmed" additivity="false">
+		<level value="info"/>
+		<appender-ref ref="stdout"/>
+		<appender-ref ref="A1"/>
+	</logger>
+	<root>
+		<priority value="info"/>
+		<appender-ref ref="stdout"/>
+		<appender-ref ref="A1"/>
+	</root>
+</log4j:configuration>
