@@ -231,6 +231,11 @@ public class ImportManager {
 		if (!dataFolder.exists()){
 			dataFolder.mkdirs();
 		}
+		
+		File outputFolder=new File("output");
+		if (!outputFolder.exists()){
+			outputFolder.mkdirs();
+		}
 	}
 
 	public void execute() throws IOException, Exception {
