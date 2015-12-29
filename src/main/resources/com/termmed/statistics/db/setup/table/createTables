@@ -2,6 +2,9 @@ drop PROCEDURE if exists createGeneralStatistics;
 drop PROCEDURE if exists createNewConceptStatistics;
 drop PROCEDURE if exists createRetiredConceptStatistics;
 drop PROCEDURE if exists createChangedConceptStatistics;
+drop PROCEDURE if exists getNewConceptDetails;
+drop PROCEDURE if exists getRetiredConceptDetails;
+drop PROCEDURE if exists getChangedConceptDetails;
 
 DROP TABLE IF EXISTS testtime;
 
@@ -224,3 +227,31 @@ CREATE TABLE CPTFIRSTLEVEL_TABLE5 (
 		PERCOFDESCRIPTIONCHANGE DECIMAL(5 , 2),
 		PERCOFFSNCHANGE DECIMAL(5 , 2)
 	);
+	
+	
+CREATE TABLE cpttable2_details (
+		ANCESTOR VARCHAR(255),
+		ID BIGINT,
+		TERM VARCHAR(255),
+		DEFINITIONSTATUS VARCHAR(22)
+	);
+	
+CREATE TABLE cpttable3_details (
+		ANCESTOR VARCHAR(255),
+		ID BIGINT,
+		TERM VARCHAR(255),
+		REASON VARCHAR(18)
+	);
+	
+CREATE TABLE cpttable4_details (
+		ANCESTOR VARCHAR(255),
+		ID BIGINT,
+		TERM VARCHAR(255),
+		STATEDDEFCHANGE VARCHAR(3),
+		INFERREDDEFCHANGE VARCHAR(3),
+		PRIMITIVE2SD VARCHAR(3),
+		SD2PRIMITIVE VARCHAR(3),
+		DESCRIPTIONCHANGE VARCHAR(3),
+		FSNCHANGE VARCHAR(3),
+	);
+	

@@ -12,4 +12,5 @@
 	<sp_params>
 		<releaseDate>20160131</releaseDate>
 	</sp_params>
+	<createDetailReports>true</createDetailReports>
 </config>

@@ -11,8 +11,11 @@ declare vSD2Prim INTEGER;
 declare descrCh INTEGER;
 declare vFsnCh INTEGER;
 declare vAnyCh INTEGER;
-declare actCpts INTEGER;
+declare totCpt INTEGER;
 
+
+select count(*) into totCpt
+from s_concepts c;
 
 truncate table actConcepts;
 
@@ -47,14 +50,16 @@ truncate table statedChanges;
 truncate table inferredChanges ;
 
 insert into statedChanges 
-				select distinct r.sourceid
-				from s_statedrels r
+				select distinct a.id
+				from actConcepts a inner join s_statedrels r
+				on r.sourceId=a.id
 				where r.effectiveTime=releaseDate;
 				
 				
 insert into inferredChanges 
-				select distinct r.sourceid
-				from s_relationships r
+				select distinct a.id
+				from actConcepts a inner join s_relationships r
+				on r.sourceId=a.id
 				where r.effectiveTime=releaseDate;
 
 insert into testtime values (1,'descCh' , CURRENT_TIMESTAMP);
@@ -143,6 +148,9 @@ select distinct c.id
 
 insert into testtime values (2,'fsnCh' , CURRENT_TIMESTAMP);
 
+
+truncate table actConcepts;
+
 select count(*) into vFsnCh
 from fsnCh;
 
@@ -196,7 +204,6 @@ set StatedDefChange=(select count(*)
 					where t.ancestor=cptFirstLevel_table4.id);
 
 insert into testtime values (2,'StatedDefChange' , CURRENT_TIMESTAMP);
-truncate table statedChanges;
 
 insert into testtime values (1,'InferredDefChange' , CURRENT_TIMESTAMP);
 Update cptFirstLevel_table4
@@ -207,7 +214,6 @@ set InferredDefChange =(select count(*)
 					where t.ancestor=cptFirstLevel_table4.id);
 insert into testtime values (2,'InferredDefChange' , CURRENT_TIMESTAMP);
 
-truncate table inferredChanges;
 
 insert into testtime values (1,'Primitive2SD' , CURRENT_TIMESTAMP);
 Update cptFirstLevel_table4
@@ -218,7 +224,6 @@ set Primitive2SD =(select count(*)
 					where t.ancestor=cptFirstLevel_table4.id);
 insert into testtime values (2,'Primitive2SD' , CURRENT_TIMESTAMP);
 
-truncate table prim2SD ;
 
 insert into testtime values (1,'SD2Primitive' , CURRENT_TIMESTAMP);
 Update cptFirstLevel_table4
@@ -229,8 +234,6 @@ set SD2Primitive =(select count(*)
 					where t.ancestor=cptFirstLevel_table4.id);
 insert into testtime values (2,'SD2Primitive' , CURRENT_TIMESTAMP);
 
-truncate table SD2prim ;								
-
 insert into testtime values (1,'DescriptionChange' , CURRENT_TIMESTAMP);
 Update cptFirstLevel_table4
 set DescriptionChange =(select count(*) 
@@ -240,7 +243,6 @@ set DescriptionChange =(select count(*)
 					where t.ancestor=cptFirstLevel_table4.id);
 
 insert into testtime values (2,'DescriptionChange' , CURRENT_TIMESTAMP);
-truncate table descCh ;
 
 insert into testtime values (1,'FSNChange' , CURRENT_TIMESTAMP);
 
@@ -252,7 +254,6 @@ set FSNChange =(select count(*)
 					where t.ancestor=cptFirstLevel_table4.id);
 
 insert into testtime values (2,'FSNChange' , CURRENT_TIMESTAMP);
-truncate table fsnCh ;
 
 insert into testtime values (1,'AnyChange' , CURRENT_TIMESTAMP);
 Update cptFirstLevel_table4
@@ -264,13 +265,6 @@ set AnyChange =(select count(*)
 
 insert into testtime values (2,'AnyChange' , CURRENT_TIMESTAMP);
 
-truncate table anyCh ;
-
-select count(*) 
-into actCpts
-from actConcepts;
-
-truncate table actConcepts;
 
 truncate table cptRootLevel_table5;
 
@@ -285,35 +279,30 @@ and d.active=1
 and d.typeId=900000000000003001;
 
 insert into testtime values (2,'cptRootLevel_table5' , CURRENT_TIMESTAMP);
-if vAnyCh>0 then
 
 insert into testtime values (1,'cptRootLevel_table5 fields update' , CURRENT_TIMESTAMP);
 Update cptRootLevel_table5
-set PercOfStatedDefChange=100 * statedCh / vAnyCh;
+set PercOfStatedDefChange=100 * statedCh / totCpt;
 
 Update cptRootLevel_table5
-set PercOfInferredDefChange=100 * inferredCh / vAnyCh;
+set PercOfInferredDefChange=100 * inferredCh / totCpt;
 
 Update cptRootLevel_table5
-set PercOfPrimitive2SD =100 * vprim2SD / vAnyCh;
+set PercOfPrimitive2SD =100 * vprim2SD / totCpt;
 
 Update cptRootLevel_table5
-set PercOfSD2Primitive = 100 * vSD2Prim / vAnyCh;
+set PercOfSD2Primitive = 100 * vSD2Prim / totCpt;
 
 Update cptRootLevel_table5
-set PercOfDescriptionChange = 100 * descrCh / vAnyCh;
+set PercOfDescriptionChange = 100 * descrCh / totCpt;
 
 Update cptRootLevel_table5
-set PercOfFSNChange = 100 * vFsnCh / vAnyCh;
+set PercOfFSNChange = 100 * vFsnCh / totCpt;
 
-end if;
-
-if actCpts>0 then
 
 Update cptRootLevel_table5
-set PercOfAnyChange = 100 * vAnyCh / actCpts;
+set PercOfAnyChange = 100 * vAnyCh / totCpt;
 
-end if;
 
 insert into testtime values (2,'cptRootLevel_table5 fields update' , CURRENT_TIMESTAMP);
 truncate table cptFirstLevel_table5;
@@ -335,72 +324,54 @@ insert into testtime values (1,'cptFirstLevel_table5  fields update' , CURRENT_T
 Update cptFirstLevel_table5
 set PercOfStatedDefChange=100 * (select StatedDefChange 
 					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id) /(select c.AnyChange 
-					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id)
-					where exists(select 0 
-					from cptFirstLevel_table4 c2
-					where c2.id=cptFirstLevel_table5.id and c2.AnyChange>0 ) ;
+					where c.id=cptFirstLevel_table5.id) /(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table5.id);
 
 Update cptFirstLevel_table5
 set PercOfInferredDefChange =100 * (select InferredDefChange 
 					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id) /(select c.AnyChange 
-					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id)
-					where exists(select 0 
-					from cptFirstLevel_table4 c2
-					where c2.id=cptFirstLevel_table5.id and c2.AnyChange>0 ) ;
+					where c.id=cptFirstLevel_table5.id) /(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table5.id);
 
 Update cptFirstLevel_table5
 set PercOfPrimitive2SD =100 * (select Primitive2SD 
 					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id) /(select c.AnyChange 
-					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id)
-					where exists(select 0 
-					from cptFirstLevel_table4 c2
-					where c2.id=cptFirstLevel_table5.id and c2.AnyChange>0 ) ;
+					where c.id=cptFirstLevel_table5.id) /(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table5.id);
 
 Update cptFirstLevel_table5
 set PercOfSD2Primitive =100 * (select SD2Primitive 
 					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id) /(select c.AnyChange 
-					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id)
-					where exists(select 0 
-					from cptFirstLevel_table4 c2
-					where c2.id=cptFirstLevel_table5.id and c2.AnyChange>0 ) ;
+					where c.id=cptFirstLevel_table5.id) /(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table5.id);
 								
 
 Update cptFirstLevel_table5
 set PercOfDescriptionChange =100 * (select DescriptionChange 
 					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id) /(select c.AnyChange 
-					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id)
-					where exists(select 0 
-					from cptFirstLevel_table4 c2
-					where c2.id=cptFirstLevel_table5.id and c2.AnyChange>0 ) ;
+					where c.id=cptFirstLevel_table5.id) /(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table5.id);
 
 Update cptFirstLevel_table5
 set PercOfFSNChange =100 * (select FSNChange 
 					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id) /(select c.AnyChange 
-					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id)
-					where exists(select 0 
-					from cptFirstLevel_table4 c2
-					where c2.id=cptFirstLevel_table5.id and c2.AnyChange>0 ) ;
+					where c.id=cptFirstLevel_table5.id) /(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table5.id);
 
-if actCpts>0 then
 
 Update cptFirstLevel_table5
 set PercOfAnyChange =100 * (select AnyChange 
 					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id)/actCpts;
+					where c.id=cptFirstLevel_table5.id)/(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table5.id);
 
-end if;
 insert into testtime values (2,'cptFirstLevel_table5  fields update' , CURRENT_TIMESTAMP);
 
 END

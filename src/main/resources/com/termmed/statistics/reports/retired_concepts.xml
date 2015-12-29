@@ -4,6 +4,7 @@
 	<inputFile>CONCEPTS</inputFile>
 	<inputFile>DESCRIPTIONS</inputFile>
 	<inputFile>ATTRIBUTEVALUES</inputFile>
+	<inputFile>TCLOSURESTATED</inputFile>
 	<inputFile>TCLOSURESTATED_PREVIOUS</inputFile>
 	<storedProcedure>
 		<name>createRetiredConceptStatistics()</name>
@@ -18,4 +19,11 @@
 	<tableName>cptFirstLevel_table3</tableName>
 	</select>
 	</outputFile>
+	<outputDetailFile>
+	<file>output/RetiredConceptDetails</file>
+	<reportHeader>Ancestor,Id,Term,Reason</reportHeader>
+	<storedProcedure>
+	<name>getRetiredConceptDetails()</name>
+	</storedProcedure>
+	</outputDetailFile>
 </reportConfig>

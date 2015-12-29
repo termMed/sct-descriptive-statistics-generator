@@ -103,8 +103,9 @@ set PercentOfNewSD=(100 *(select count(*)
 					inner join s_tclosure_stated t 
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table2.id
-					and c.definitionStatusId=900000000000073002)/NewConcepts)
-					where NewConcepts>0 ;
+					and c.definitionStatusId=900000000000073002)/(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table2.id));
 
 
 
@@ -114,10 +115,10 @@ set PercentOfNewP=(100 *(select count(*)
 					inner join s_tclosure_stated t 
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table2.id
-					and c.definitionStatusId=900000000000074008)/NewConcepts)
-					where NewConcepts>0;
+					and c.definitionStatusId=900000000000074008)/(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table2.id));
 					
-truncate table newConcepts;
 
 end if;
 

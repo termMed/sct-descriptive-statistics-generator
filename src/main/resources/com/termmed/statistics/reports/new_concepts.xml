@@ -18,4 +18,11 @@
 	<tableName>cptFirstLevel_table2</tableName>
 	</select>
 	</outputFile>
+	<outputDetailFile>
+	<file>output/NewConceptDetails</file>
+	<reportHeader>Ancestor,Id,Term,DefinitionStatus</reportHeader>
+	<storedProcedure>
+	<name>getNewConceptDetails()</name>
+	</storedProcedure>
+	</outputDetailFile>
 </reportConfig>

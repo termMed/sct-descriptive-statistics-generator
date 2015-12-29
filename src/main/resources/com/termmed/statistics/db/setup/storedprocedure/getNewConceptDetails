@@ -1,0 +1,28 @@
+drop procedure if exists getNewConceptDetails;
+
+CREATE PROCEDURE getNewConceptDetails()
+ MODIFIES SQL DATA DYNAMIC RESULT SETS 1
+ BEGIN ATOMIC
+ 
+ DECLARE result CURSOR WITH RETURN FOR SELECT * FROM cpttable2_details FOR READ ONLY;
+
+
+truncate table cpttable2_details;
+
+insert into cpttable2_details
+select distinct d2.term, r.id, d.term ,case r.definitionStatusId 
+when 900000000000074008 then 'Primitive'
+else 'Sufficiently defined' end case
+from newConcepts r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_descriptions d on d.conceptId=r.id
+inner join s_descriptions d2 on d2.conceptId=t.ancestor
+where d.active=1
+and d.typeId=900000000000003001
+and d2.active=1
+and d2.typeId=900000000000003001;
+
+
+open result;
+
+END

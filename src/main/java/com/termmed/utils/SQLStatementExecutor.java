@@ -19,6 +19,8 @@ public class SQLStatementExecutor {
 	}
 	
 	public boolean executeStatement(String statement, Integer queryTimeOut) throws SQLException {
+		
+		resultSet=null;
 		if (statement != null && statement.length() > 0) {
 			Statement st = con.createStatement();
 			
@@ -38,6 +40,7 @@ public class SQLStatementExecutor {
 		return false;
 	}
 	public boolean executeQuery(String query, Integer queryTimeOut) throws SQLException {
+		resultSet=null;
 		if (query != null && query.length() > 0) {
 			Statement st = con.createStatement();
 			
@@ -57,6 +60,7 @@ public class SQLStatementExecutor {
 		return false;
 	}
 	public boolean executeStoredProcedure(StoredProcedure sProcedure,HashMap<String,String> params, Integer queryTimeOut) throws SQLException{
+		resultSet=null;
 		if (sProcedure != null ) {
 			CallableStatement st = con.prepareCall("call " + sProcedure.getName());
 			if (sProcedure.getParam()!=null){
@@ -73,7 +77,9 @@ public class SQLStatementExecutor {
 			}
 			
 			st.execute();
-			resultSet  = st.getResultSet();
+			if (st.getMoreResults()){
+				resultSet  = st.getResultSet();
+			}
 			if (resultSet == null) {
 				st.close();
 			}

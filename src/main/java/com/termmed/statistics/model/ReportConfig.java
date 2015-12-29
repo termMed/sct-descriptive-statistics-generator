@@ -18,6 +18,8 @@ public class ReportConfig implements java.io.Serializable {
 	private ArrayList<TABLE> inputFile;
 	private StoredProcedure storedProcedure;
 	private ArrayList<OutputFileTableMap> outputFile;
+	private ArrayList<OutputDetailFile> outputDetailFile;
+	
 	
 	public ArrayList<TABLE> getInputFile() {
 		return inputFile;
@@ -36,5 +38,11 @@ public class ReportConfig implements java.io.Serializable {
 	}
 	public void setOutputFile(ArrayList<OutputFileTableMap> outputFile) {
 		this.outputFile = outputFile;
+	}
+	public ArrayList<OutputDetailFile> getOutputDetailFile() {
+		return outputDetailFile;
+	}
+	public void setOutputDetailFile(ArrayList<OutputDetailFile> outputDetailFile) {
+		this.outputDetailFile = outputDetailFile;
 	}
 }

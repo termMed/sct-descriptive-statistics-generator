@@ -31,4 +31,11 @@
 	<tableName>cptFirstLevel_table5</tableName>
 	</select>
 	</outputFile>
+	<outputDetailFile>
+	<file>output/ChangedConceptDetails</file>
+	<reportHeader>Ancestor,Id,Term,StatedDefChange,InferredDefChange,Primitive2SD,SD2Primitive,DescriptionChange,FSNChange</reportHeader>
+	<storedProcedure>
+	<name>getChangedConceptDetails()</name>
+	</storedProcedure>
+	</outputDetailFile>
 </reportConfig>

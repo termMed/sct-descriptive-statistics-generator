@@ -1,0 +1,36 @@
+drop procedure if exists getRetiredConceptDetails;
+
+CREATE PROCEDURE getRetiredConceptDetails()
+ MODIFIES SQL DATA DYNAMIC RESULT SETS 1
+ BEGIN ATOMIC
+ 
+ DECLARE result CURSOR WITH RETURN FOR SELECT * FROM cpttable3_details FOR READ ONLY;
+
+
+truncate table cpttable3_details;
+
+insert into cpttable3_details
+select distinct d2.term, r.id, d.term ,
+case a.valueid
+when 900000000000482003 then 'Dulicated'
+when 900000000000483008 then 'Outdated'
+when 900000000000485001 then 'Erroneous'
+when 900000000000486000 then 'Limited'
+when 900000000000487009 then 'Moved else where'
+when 900000000000484002 then 'Ambiguous'
+else 'Reason not stated' end case
+from retConcepts r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_descriptions d on d.conceptId=r.id
+inner join s_descriptions d2 on d2.conceptId=t.ancestor
+left join s_attributevalues a
+on a.referencedComponentId=r.id and a.refsetId=900000000000489007
+where d.active=1
+and d.typeId=900000000000003001
+and d2.active=1
+and d2.typeId=900000000000003001;
+
+
+open result;
+
+END
