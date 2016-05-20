@@ -1,0 +1,77 @@
+drop procedure if exists getChangedConceptDetails;
+
+CREATE PROCEDURE getChangedConceptDetails()
+ MODIFIES SQL DATA DYNAMIC RESULT SETS 1
+ BEGIN ATOMIC
+ 
+ DECLARE result CURSOR WITH RETURN FOR SELECT * FROM cpttable4_details FOR READ ONLY;
+
+
+truncate table cpttable4_details;
+
+insert into cpttable4_details
+select distinct d2.term, r.id, d.term , 'Stated view change',case r.defStatus 
+		when 1 then 'Primitive'
+		else 'Sufficiently defined' end case
+from statedChanges r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor
+left join s_descriptions d on d.conceptId=r.id
+and d.active=1
+and d.typeId=900000000000003001;
+
+
+insert into cpttable4_details
+select distinct d2.term, r.id, d.term , 'Inferred view change',case r.defStatus 
+		when 1 then 'Primitive'
+		else 'Sufficiently defined' end case
+from inferredChanges r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor
+left join s_descriptions d on d.conceptId=r.id
+and d.active=1
+and d.typeId=900000000000003001;
+
+
+insert into cpttable4_details
+select distinct d2.term, r.id, d.term , 'Primitive to sufficiently defined change','Sufficiently defined' 
+from Prim2SD r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor
+left join s_descriptions d on d.conceptId=r.id
+and d.active=1
+and d.typeId=900000000000003001;
+
+insert into cpttable4_details
+select distinct d2.term, r.id, d.term , 'Sufficiently defined to primitive change','Primitive'
+from SD2Prim r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor
+left join s_descriptions d on d.conceptId=r.id
+and d.active=1
+and d.typeId=900000000000003001;
+
+
+insert into cpttable4_details
+select distinct d2.term, r.id, d.term , 'Description change',case r.defStatus 
+		when 1 then 'Primitive'
+		else 'Sufficiently defined' end case
+from descCh r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor
+left join s_descriptions d on d.conceptId=r.id
+and d.active=1
+and d.typeId=900000000000003001;
+
+insert into cpttable4_details
+select distinct d2.term, r.id, r.term , 'FSN change',case r.defStatus 
+		when 1 then 'Primitive'
+		else 'Sufficiently defined' end case
+from fsnCh r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor;
+
+
+open result;
+
+END

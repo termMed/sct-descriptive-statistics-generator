@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>8</patternId>
+<name>Intermediate primitives that have lost inferred subtypes</name>
+<description>Intermediate primitives that have lost inferred subtypes</description>
+<severity>low</severity>
+<resultFileName>intermediate_primitives_lost_subtypes.json</resultFileName>
+<executionClass>com.termmed.control.patterns.IntermediatePrimitiveLostSubtypes</executionClass>
+</patternConfig>

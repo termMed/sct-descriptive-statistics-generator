@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>20</patternId>
+<name>Body structure concepts without “entire” in the FSN that descend from concepts with “entire” in the FSN</name>
+<description>Body structure concepts without “entire” in the FSN that are subtypes of concepts with “entire” in the FSN</description>
+<severity>low</severity>
+<resultFileName>concept_without_entire.json</resultFileName>
+<executionClass>com.termmed.control.patterns.ConceptWithoutEntire</executionClass>
+</patternConfig>

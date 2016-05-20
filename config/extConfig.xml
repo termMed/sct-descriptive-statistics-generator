@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<releaseFullFolder>/Users/ar/Downloads/Uruguay/Release_Uruguay_20160215/Full</releaseFullFolder>
+	<releaseDate>20160215</releaseDate>
+	<previousReleaseDate>20150807</previousReleaseDate>
+	<reports>
+		<reportDescriptor><filename>general.xml</filename><execute>true</execute></reportDescriptor>
+		<reportDescriptor><filename>new_concepts.xml</filename><execute>true</execute></reportDescriptor>
+		<reportDescriptor><filename>retired_concepts.xml</filename><execute>true</execute></reportDescriptor>
+		<reportDescriptor><filename>changed_concepts.xml</filename><execute>true</execute></reportDescriptor>
+		<reportDescriptor><filename>localized_concepts.xml</filename><execute>true</execute></reportDescriptor>
+	</reports>
+	<sp_params>
+		<param><name>releaseDate</name><value>20160215</value></param>
+	</sp_params>
+	<createDetailReports>true</createDetailReports>
+	<releaseDependencies>
+		<releaseFullFolder>/Users/ar/Downloads/RF2_Core_Release_20150731_Beta_version_4/Full</releaseFullFolder>
+		<releaseFullFolder>/Users/ar/Downloads/ES_Release/RF2/SnomedCT_SpanishRelease-es_INT_20151031/RF2Release/Full</releaseFullFolder>
+	</releaseDependencies>
+	<patternExecutions>
+		<runControlPatterns>true</runControlPatterns>
+		<exclusions>
+		<patternId></patternId>
+		</exclusions>
+	</patternExecutions>
+</config>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>4</patternId>
+<name>Role group crossovers between two relationship pairs in different role groups</name>
+<description>Role group crossovers are combinations of role groups inherited from different supertypes with overlapping contradictory restrictions resulting in inconsistent inheritance patterns in Distribution Normal Form.</description>
+<severity>low</severity>
+<resultFileName>crossover_group_to_group.json</resultFileName>
+<executionClass>com.termmed.control.patterns.CrossoverGroup2Group</executionClass>
+</patternConfig>

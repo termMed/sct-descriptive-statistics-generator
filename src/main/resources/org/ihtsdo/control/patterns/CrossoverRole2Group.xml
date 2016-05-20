@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>5</patternId>
+<name>Role and role group anomalies in the distribution normal form related to partial crossovers and role group inconsistencies in the asserted subtype hierarchy.</name>
+<description>Role grouping anomalies related to combinations of ungrouped roles and role groups inherited from different supertypes with overlapping contradictory restrictions resulting in inconsistent inheritance patterns in Distribution Normal Form.</description>
+<severity>low</severity>
+<resultFileName>crossover_role_to_group.json</resultFileName>
+<executionClass>com.termmed.control.patterns.CrossoverRole2Group</executionClass>
+</patternConfig>

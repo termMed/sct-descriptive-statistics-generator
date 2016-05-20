@@ -1,0 +1,50 @@
+drop procedure if exists getRetiredConceptDetails;
+
+CREATE PROCEDURE getRetiredConceptDetails()
+ MODIFIES SQL DATA DYNAMIC RESULT SETS 1
+ BEGIN ATOMIC
+ 
+ DECLARE result CURSOR WITH RETURN FOR SELECT * FROM cpttable3_details FOR READ ONLY;
+
+
+truncate table cpttable3_details;
+
+insert into cpttable3_details
+select distinct d2.term, r.id, d.term ,
+case a.valueid
+when 900000000000482003 then 'Duplicate'
+when 900000000000483008 then 'Outdated'
+when 900000000000485001 then 'Erroneous'
+when 900000000000486000 then 'Limited'
+when 900000000000487009 then 'Moved else where'
+when 900000000000484002 then 'Ambiguous'
+else 'Reason not stated' end case
+from retConcepts r
+inner join s_tclosure_stated_pre t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor
+left join s_attributevalues a
+on a.referencedComponentId=r.id and a.refsetId=900000000000489007
+left join s_descriptions d on d.conceptId=r.id
+and d.active=1
+and d.typeId=900000000000003001;
+
+update cpttable3_details
+set TERM= (select top 1 d.term from s_descriptions d 
+			where d.conceptid=cpttable3_details.id
+			and d.active=1)
+			where cpttable3_details.term is null ;
+
+
+update cpttable3_details
+set TERM= TERM + ' SAME AS ' + (select top 1 case isnull(d.term,'')
+		when '' then cast(a.targetComponentId as varchar(18)) else d.term end case 
+		from 
+			s_same_associations a left join s_descriptions d 
+			on d.conceptid=a.targetComponentId
+			and d.active=1 and d.typeId=900000000000003001
+			where a.referencedComponentId=cpttable3_details.id)
+			where cpttable3_details.REASON= 'Duplicate' ;
+			
+open result;
+
+END

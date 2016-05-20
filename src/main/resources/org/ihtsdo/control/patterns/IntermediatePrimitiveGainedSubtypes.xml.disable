@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>9</patternId>
+<name>Intermediate primitives that have gained inferred subtypes</name>
+<description>Intermediate primitives that have gained inferred subtypes</description>
+<severity>low</severity>
+<resultFileName>intermediate_primitives_gained_subtypes.json</resultFileName>
+<executionClass>com.termmed.control.patterns.IntermediatePrimitiveGainedSubtypes</executionClass>
+</patternConfig>

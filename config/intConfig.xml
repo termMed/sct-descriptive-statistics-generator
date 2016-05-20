@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<releaseFullFolder>/Users/ar/Downloads/SnomedCT_RF2Release_INT_20160131/Full</releaseFullFolder>
+	<releaseDate>20160131</releaseDate>
+	<previousReleaseDate>20150731</previousReleaseDate>
+	<reports>
+		<reportDescriptor><filename>general.xml</filename><execute>true</execute></reportDescriptor>
+		<reportDescriptor><filename>new_concepts.xml</filename><execute>true</execute></reportDescriptor>
+		<reportDescriptor><filename>retired_concepts.xml</filename><execute>true</execute></reportDescriptor>
+		<reportDescriptor><filename>changed_concepts.xml</filename><execute>true</execute></reportDescriptor>
+		<reportDescriptor><filename>localized_concepts.xml</filename><execute>false</execute></reportDescriptor>
+	</reports>
+	<sp_params>
+		<param><name>releaseDate</name><value>20160131</value></param>
+	</sp_params>
+	<createDetailReports>true</createDetailReports>
+	<patternExecutions>
+		<runControlPatterns>true</runControlPatterns>
+		<exclusions>
+		</exclusions>
+	</patternExecutions>
+	<interestConceptLists>
+	<conceptListDescriptor>
+	<filePath></filePath>
+	<conceptIdColumnIndex></conceptIdColumnIndex>
+	<listTitle></listTitle>
+	</conceptListDescriptor>
+	</interestConceptLists>
+</config>

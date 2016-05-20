@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<reportConfig>
+	<name>General Statistics</name>
+	<inputFile>STATEDROOTDESC</inputFile>
+	<inputFile>CONCEPTS</inputFile>
+	<inputFile>DESCRIPTIONS</inputFile>
+	<inputFile>RELATIONSHIPS</inputFile>
+	<inputFile>TCLOSURESTATED</inputFile>
+	<storedProcedure>
+		<name>createGeneralStatistics()</name>
+	</storedProcedure>
+	<outputFile>
+	<file>GENERAL_RELEASE_STATISTICS.csv</file>
+	<reportHeader>id,term,Concepts,PercentOfTotal,PercentOfSD,Descriptions,Relationships</reportHeader>
+	<select>
+	<tableName>cptRootLevel</tableName>
+	</select>
+	<select>
+	<tableName>cptFirstLevel</tableName>
+	</select>
+	</outputFile>
+</reportConfig>	

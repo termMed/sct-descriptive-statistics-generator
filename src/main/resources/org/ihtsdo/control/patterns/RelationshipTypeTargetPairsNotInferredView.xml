@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>19</patternId>
+<name>RelationshipType-target pairs that are present in the stated form but absent in the inferred form</name>
+<description>RelationshipType-target pairs that are asserted but are supercedeed by more specific existential restrictions in the Distribution Normal Form (they are likely to be redundant)</description>
+<severity>low</severity>
+<resultFileName>relationships_type_target_not_in_inferred.json</resultFileName>
+<executionClass>com.termmed.control.patterns.RelationshipTypeTargetPairsNotInferredView</executionClass>
+</patternConfig>

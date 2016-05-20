@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>7</patternId>
+<name>Intermediate primitive concepts that have sufficiently defined supertypes and subtypes.</name>
+<description>A subset of intermediate primitive concepts (as defined in the Editorial Policies) that have both sufficiently defined supertypes and subtypes, and could therefore affect classification results for sufficiently defined subtypes.</description>
+<severity>low</severity>
+<resultFileName>intermediate_primitives.json</resultFileName>
+<executionClass>com.termmed.control.patterns.IntermediatePrimitive</executionClass>
+</patternConfig>

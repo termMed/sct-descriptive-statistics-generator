@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>99</patternId>
+<name>List of children and descendants</name>
+<description>List of children and descendants</description>
+<severity>low</severity>
+<resultFileName>ChildrenAndDescendants.txt</resultFileName>
+<executionClass>com.termmed.control.patterns.ListOfChildrenAndDescendants</executionClass>
+</patternConfig>

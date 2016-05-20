@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>1</patternId>
+<name>Redundantly asserted IsA relationships</name>
+<description>Concepts that have stated (asserted) supertypes that are implied by other supertypes. For example, if A is a B, and B is a C, stating that A is a C is a redundant assertion that will be removed in the Distribution Normal Form (DNF)</description>
+<severity>low</severity>
+<resultFileName>redundant_isas.json</resultFileName>
+<executionClass>com.termmed.control.patterns.RedundancyIsa2Isa</executionClass>
+</patternConfig>

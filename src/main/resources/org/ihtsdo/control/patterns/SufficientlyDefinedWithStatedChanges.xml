@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>25</patternId>
+<name>Sufficiently defined concepts with stated changes</name>
+<description>Sufficiently defined concepts with stated changes</description>
+<severity>low</severity>
+<resultFileName>suffdefined_stated_changes.json</resultFileName>
+<executionClass>com.termmed.control.patterns.SufficientlyDefinedWithStatedChanges</executionClass>
+</patternConfig>

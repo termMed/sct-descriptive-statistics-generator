@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<reportConfig>
+	<name>Changed Concepts</name>
+	<inputFile>STATEDROOTDESC</inputFile>
+	<inputFile>CONCEPTS</inputFile>
+	<inputFile>CONCEPTS_PREVIOUS</inputFile>
+	<inputFile>DESCRIPTIONS</inputFile>
+	<inputFile>STATEDRELS</inputFile>
+	<inputFile>RELATIONSHIPS</inputFile>
+	<inputFile>TCLOSURESTATED</inputFile>
+	<storedProcedure>
+		<name>createChangedConceptStatistics(?)</name>
+		<param><name>releaseDate</name><order>1</order><sqlType>INT</sqlType></param>
+	</storedProcedure>
+	<outputFile>
+	<file>STATISTICS_ON_EXISTING_CONCEPTS_count.csv</file>
+	<reportHeader>id,term,AnyChange,StatedDefChange,InferredDefChange,Primitive2SD,SD2Primitive,DescriptionChange,FSNChange</reportHeader>
+	<select>
+	<tableName>cptRootLevel_table4</tableName>
+	</select>
+	<select>
+	<tableName>cptFirstLevel_table4</tableName>
+	</select>
+	</outputFile>
+	<outputFile>
+	<file>STATISTICS_ON_EXISTING_CONCEPTS_percent.csv</file>
+	<reportHeader>id,term,PercOfAnyChange,PercOfStatedDefChange,PercOfInferredDefChange,PercOfPrimitive2SD,PercOfSD2Primitive,PercOfDescriptionChange,PercOfFSNChange</reportHeader>
+	<select>
+	<tableName>cptRootLevel_table5</tableName>
+	</select>
+	<select>
+	<tableName>cptFirstLevel_table5</tableName>
+	</select>
+	</outputFile>
+	<outputDetailFile>
+	<file>changedConceptDetails.csv</file>
+	<reportHeader>Hierarchy,Id,Term,ChangeType,DefinitionStatus</reportHeader>
+	<storedProcedure>
+	<name>getChangedConceptDetails()</name>
+	</storedProcedure>
+	</outputDetailFile>
+</reportConfig>

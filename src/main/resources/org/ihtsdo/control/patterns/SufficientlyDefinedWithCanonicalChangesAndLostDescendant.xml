@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>23</patternId>
+<name>Sufficiently defined concepts with long canonical form changes that have lost inferred descendants</name>
+<description>Sufficiently defined concepts with long canonical form changes that have lost inferred descendants</description>
+<severity>low</severity>
+<resultFileName>suffdefined_canonical_changes_lost_descendant.json</resultFileName>
+<executionClass>com.termmed.control.patterns.SufficientlyDefinedWithCanonicalChangesAndLostDescendant</executionClass>
+</patternConfig>

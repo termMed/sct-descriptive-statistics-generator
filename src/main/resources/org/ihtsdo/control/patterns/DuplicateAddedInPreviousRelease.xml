@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>21</patternId>
+<name>New duplicate concepts identified in the subset of concepts that were added in the previous release.</name>
+<description>Concepts added as new in the previous release that are inactivated as duplicate in the current release</description>
+<severity>low</severity>
+<resultFileName>duplicate_added_in_previous_release.json</resultFileName>
+<executionClass>com.termmed.control.patterns.DuplicateAddedInPreviousRelease</executionClass>
+</patternConfig>

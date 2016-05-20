@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<reportConfig>
+	<name>Retired Concepts</name>
+	<inputFile>STATEDROOTDESC</inputFile>
+	<inputFile>CONCEPTS</inputFile>
+	<inputFile>DESCRIPTIONS</inputFile>
+	<inputFile>ATTRIBUTEVALUES</inputFile>
+	<inputFile>TCLOSURESTATED</inputFile>
+	<inputFile>TCLOSURESTATED_PREVIOUS</inputFile>
+	<inputFile>SAME_AS_ASSOCIATIONS</inputFile>
+	<storedProcedure>
+		<name>createRetiredConceptStatistics()</name>
+	</storedProcedure>
+	<outputFile>
+	<file>STATISTICS_ON_RETIRED_CONCEPTS.csv</file>
+	<reportHeader>id,term,RetiredConcepts,PercentOfTotal,PercentOfAllRetired,PercentOfAmbiguous,PercentOfDuplicated,PercentOfErroneous,PercentOfNotStated,PercentOfOutdated,PercentOfMoved,PercentOfLimited</reportHeader>
+	<select>
+	<tableName>cptRootLevel_table3</tableName>
+	</select>
+	<select>
+	<tableName>cptFirstLevel_table3</tableName>
+	</select>
+	</outputFile>
+	<outputDetailFile>
+	<file>retiredConceptsDetailed.csv</file>
+	<reportHeader>Hierarchy,Id,Term,Reason</reportHeader>
+	<storedProcedure>
+	<name>getRetiredConceptDetails()</name>
+	</storedProcedure>
+	</outputDetailFile>
+</reportConfig>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>18</patternId>
+<name>Sufficiently defined concepts with no stated existential restrictions</name>
+<description>Sufficiently defined concepts with no stated existential restrictions, fully defined by supertype relationships</description>
+<severity>low</severity>
+<resultFileName>suffdefined_wo_stated_attr.json</resultFileName>
+<executionClass>com.termmed.control.patterns.SuffDefinedConceptWithoutStatedAttr</executionClass>
+</patternConfig>

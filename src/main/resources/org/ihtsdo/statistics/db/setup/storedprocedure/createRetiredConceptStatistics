@@ -1,0 +1,236 @@
+drop procedure if exists createRetiredConceptStatistics;
+
+CREATE PROCEDURE createRetiredConceptStatistics()
+ MODIFIES SQL DATA
+ BEGIN ATOMIC
+ declare totCpt INTEGER;
+ declare retCpts INTEGER;
+ declare DUPLICATE bigint;
+ declare ERRONEOUS bigint;
+ declare LIMITED bigint;
+ declare MOVED_ELSE_WHERE bigint;
+ declare AMBIGUOUS bigint;
+ declare OUTDATED bigint;
+ 
+select count(*) into totCpt
+from s_concepts c;
+
+truncate table retConcepts;
+
+insert into retConcepts 
+select c.id 
+from s_concepts c
+where c.active=0
+and not exists (
+	select 0 
+	from s_concepts_pre pc
+	where pc.id=c.id
+	and pc.active=0) ;
+
+
+select count(*) 
+into retCpts
+from retConcepts;
+
+set DUPLICATE= 900000000000482003 ;
+set OUTDATED= 900000000000483008 ;
+set ERRONEOUS=900000000000485001  ;
+set LIMITED=900000000000486000;
+set MOVED_ELSE_WHERE=900000000000487009  ;
+set AMBIGUOUS=900000000000484002;
+
+truncate table cptRootLevel_table3;
+
+insert into cptRootLevel_table3 
+values ( 138875005, 'SNOMED CT Concept (SNOMED RT+CTV3)' , cast(0 as integer) , cast(0 as decimal(5,2)) 
+,cast(0 as decimal(5,2)) , cast(0 as decimal(5,2)) ,cast(0 as decimal(5,2)) 
+,cast(0 as decimal(5,2)) ,cast(0 as decimal(5,2)) ,cast(0 as decimal(5,2)) 
+,cast(0 as decimal(5,2)) ,cast(0 as decimal(5,2)) );
+
+Update cptRootLevel_table3
+set RetiredConcepts=retCpts;
+
+Update cptRootLevel_table3
+set PercentOfTotal =convert(100, decimal(16,2)) * retCpts/totCpt;
+
+Update cptRootLevel_table3
+set PercentOfAllRetired =100;
+
+if retCpts>0 then
+
+Update cptRootLevel_table3
+set PercentOfAmbiguous = convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								inner join s_attributevalues a
+								on a.referencedComponentId=c.id
+								where a.referencedComponentId=c.id and a.refsetId=900000000000489007
+								and a.valueId=AMBIGUOUS)/retCpts;
+								
+
+Update cptRootLevel_table3
+set PercentOfDuplicated =convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								inner join s_attributevalues a
+								on a.referencedComponentId=c.id
+								where a.referencedComponentId=c.id and a.refsetId=900000000000489007
+								and a.valueId=DUPLICATE)/retCpts;
+
+Update cptRootLevel_table3
+set PercentOfErroneous =convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								inner join s_attributevalues a
+								on a.referencedComponentId=c.id
+								where a.referencedComponentId=c.id and a.refsetId=900000000000489007
+								and a.valueId=ERRONEOUS)/retCpts;
+
+Update cptRootLevel_table3
+set PercentOfNotStated =convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								where not exists(
+									select 0 
+									from s_attributevalues a
+									where a.referencedComponentId=c.id
+									and a.refsetId=900000000000489007))/retCpts;
+
+Update cptRootLevel_table3
+set PercentOfOutdated =convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								inner join s_attributevalues a
+								on a.referencedComponentId=c.id
+								where a.referencedComponentId=c.id and a.refsetId=900000000000489007
+								and a.valueId=OUTDATED)/retCpts;
+
+Update cptRootLevel_table3
+set PercentOfMoved =convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								inner join s_attributevalues a
+								on a.referencedComponentId=c.id
+								where a.referencedComponentId=c.id and a.refsetId=900000000000489007
+								and a.valueId=MOVED_ELSE_WHERE)/retCpts;
+
+Update cptRootLevel_table3
+set PercentOfLimited =convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								inner join s_attributevalues a
+								on a.referencedComponentId=c.id
+								where a.referencedComponentId=c.id and a.refsetId=900000000000489007
+								and a.valueId=LIMITED)/retCpts;
+
+end if;
+
+truncate table cptFirstLevel_table3;
+
+insert into cptFirstLevel_table3 
+select r.sourceId as id, r.term , cast(0 as integer) as RetiredConcepts, cast(0 as decimal(5,2)) as PercentOfHierarchy
+,cast(0 as decimal(5,2)) as PercentOfAllRetired, cast(0 as decimal(5,2)) as PercentOfAmbiguous,cast(0 as decimal(5,2)) as PercentOfDuplicated
+,cast(0 as decimal(5,2)) as PercentOfErroneous,cast(0 as decimal(5,2)) as PercentOfNotStated ,cast(0 as decimal(5,2)) as PercentOfOutdated
+,cast(0 as decimal(5,2)) as PercentOfMoved ,cast(0 as decimal(5,2)) as PercentOfLimited
+from s_statedrootdesc r ;
+
+Update cptFirstLevel_table3
+set RetiredConcepts=(select count(*) 
+					from retConcepts c
+					inner join s_tclosure_stated_pre t 
+					on t.descendant=c.id
+					where t.ancestor=cptFirstLevel_table3.id);
+
+Update cptFirstLevel_table3
+set PercentOfHierarchy =convert(100, decimal(16,2)) * RetiredConcepts/(select count(*) + 1 
+				from s_tclosure_stated t 
+				where t.ancestor=cptFirstLevel_table3.id);
+
+if retCpts>0 then
+
+Update cptFirstLevel_table3
+set PercentOfAllRetired =convert(100, decimal(16,2)) * RetiredConcepts/retCpts;
+
+Update cptFirstLevel_table3
+set PercentOfAmbiguous = convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								inner join s_attributevalues a
+								on a.referencedComponentId=c.id
+								inner join s_tclosure_stated_pre t 
+								on t.descendant=c.id
+								where t.ancestor=cptFirstLevel_table3.id
+								and a.referencedComponentId=c.id and a.refsetId=900000000000489007
+								and a.valueId=AMBIGUOUS)/RetiredConcepts
+								where RetiredConcepts>0;
+								
+
+Update cptFirstLevel_table3
+set PercentOfDuplicated =convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								inner join s_attributevalues a
+								on a.referencedComponentId=c.id
+								inner join s_tclosure_stated_pre t 
+								on t.descendant=c.id
+								where t.ancestor=cptFirstLevel_table3.id
+								and a.referencedComponentId=c.id and a.refsetId=900000000000489007
+								and a.valueId=DUPLICATE)/RetiredConcepts
+								where RetiredConcepts>0;
+
+Update cptFirstLevel_table3
+set PercentOfErroneous =convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								inner join s_attributevalues a
+								on a.referencedComponentId=c.id
+								inner join s_tclosure_stated_pre t 
+								on t.descendant=c.id
+								where t.ancestor=cptFirstLevel_table3.id
+								and a.referencedComponentId=c.id and a.refsetId=900000000000489007
+								and a.valueId=ERRONEOUS)/RetiredConcepts
+								where RetiredConcepts>0;
+
+Update cptFirstLevel_table3
+set PercentOfNotStated =convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								inner join s_tclosure_stated_pre t 
+								on t.descendant=c.id
+								where t.ancestor=cptFirstLevel_table3.id
+								and not exists(
+									select 0 
+									from s_attributevalues a
+									where a.referencedComponentId=c.id
+									and a.refsetId=900000000000489007))/RetiredConcepts
+								where RetiredConcepts>0;
+
+Update cptFirstLevel_table3
+set PercentOfOutdated =convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								inner join s_attributevalues a
+								on a.referencedComponentId=c.id
+								inner join s_tclosure_stated_pre t 
+								on t.descendant=c.id
+								where t.ancestor=cptFirstLevel_table3.id
+								and a.referencedComponentId=c.id and a.refsetId=900000000000489007
+								and a.valueId=OUTDATED)/RetiredConcepts
+								where RetiredConcepts>0;
+
+Update cptFirstLevel_table3
+set PercentOfMoved =convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								inner join s_attributevalues a
+								on a.referencedComponentId=c.id
+								inner join s_tclosure_stated_pre t 
+								on t.descendant=c.id
+								where t.ancestor=cptFirstLevel_table3.id
+								and a.referencedComponentId=c.id and a.refsetId=900000000000489007
+								and a.valueId=MOVED_ELSE_WHERE)/RetiredConcepts
+								where RetiredConcepts>0;
+
+Update cptFirstLevel_table3
+set PercentOfLimited =convert(100, decimal(16,2)) * (select count(*) 
+								from retConcepts c
+								inner join s_attributevalues a
+								on a.referencedComponentId=c.id
+								inner join s_tclosure_stated_pre t 
+								on t.descendant=c.id
+								where t.ancestor=cptFirstLevel_table3.id
+								and a.referencedComponentId=c.id and a.refsetId=900000000000489007
+								and a.valueId=LIMITED)/RetiredConcepts
+								where RetiredConcepts>0;
+				
+end if;
+				
+
+END

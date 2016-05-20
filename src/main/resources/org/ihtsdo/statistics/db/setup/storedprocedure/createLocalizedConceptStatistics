@@ -1,0 +1,98 @@
+drop procedure if exists createLocalizedConceptStatistics;
+
+CREATE PROCEDURE createLocalizedConceptStatistics()
+ MODIFIES SQL DATA
+ BEGIN ATOMIC
+ declare totCpt INTEGER;
+ declare newCpts INTEGER;
+
+truncate table actConcepts;
+
+insert into actConcepts 
+select distinct d.conceptid, null
+from s_descriptions d
+where not exists (
+	select 0 
+	from s_concepts pc
+	where pc.id=d.conceptid)
+	and d.active=1 ;
+
+
+select count(*) into totCpt
+from actConcepts c;
+
+truncate table newConcepts;
+
+insert into newConcepts 
+select distinct d.conceptid, null,null
+from s_descriptions d
+where not exists (
+	select 0 
+	from s_descriptions_pre pc
+	where pc.conceptid=d.conceptid)
+	and not exists (
+	select 0 
+	from s_concepts pc
+	where pc.id=d.conceptid) 
+	and d.active=1;
+	
+	
+select count(*) 
+into newCpts
+from newConcepts;
+
+truncate table cptRootLevel_table6;
+
+insert into cptRootLevel_table6
+values ( 138875005, 'SNOMED CT Concept (SNOMED RT+CTV3)' , cast(0 as integer) , cast(0 as decimal(5,2)) 
+,cast(0 as integer) , cast(0 as decimal(5,2)));
+
+Update cptRootLevel_table6 
+set TotalLocalized=totCpt ;
+
+Update cptRootLevel_table6 
+set PercentOfHTotal=100;
+
+Update cptRootLevel_table6 
+set NewLocConcepts=newCpts;
+
+Update cptRootLevel_table6 
+set PercentOfNewLocTotal=100 ;
+
+truncate table cptFirstLevel_table6;
+
+insert into cptFirstLevel_table6 
+select r.sourceId as id, r.term , cast(0 as integer) , cast(0 as decimal(5,2))
+,cast(0 as integer), cast(0 as decimal(5,2)) 
+from s_statedrootdesc r ;
+
+
+Update cptFirstLevel_table6
+set TotalLocalized=(select count(*) 
+				from actConcepts c
+				inner join s_tclosure_stated t 
+				on t.descendant=c.id
+				where t.ancestor=cptFirstLevel_table6.id);
+
+
+Update cptFirstLevel_table6
+set PercentOfHTotal=(convert(100, decimal(16,2)) * TotalLocalized/(select count(*) + 1 
+				from s_tclosure_stated t 
+				where t.ancestor=cptFirstLevel_table6.id));
+
+if newCpts>0 then
+
+Update cptFirstLevel_table6
+set NewLocConcepts=(select count(*) 
+				from newConcepts c
+				inner join s_tclosure_stated t 
+				on t.descendant=c.id
+				where t.ancestor=cptFirstLevel_table6.id);
+
+
+Update cptFirstLevel_table6 
+set PercentOfNewLocTotal=(convert(100, decimal(16,2)) * NewLocConcepts/newCpts);
+
+end if;
+
+END

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>13</patternId>
+<name>Role groups with a single role</name>
+<description>Role groups with a single role</description>
+<severity>low</severity>
+<resultFileName>rolegroup_with_single_role.json</resultFileName>
+<executionClass>com.termmed.control.patterns.SingleRoleInGroup</executionClass>
+</patternConfig>

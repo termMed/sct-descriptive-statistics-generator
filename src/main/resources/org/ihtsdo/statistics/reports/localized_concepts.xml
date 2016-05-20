@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<reportConfig>
+	<name>Localized Concepts</name>
+	<inputFile>STATEDROOTDESC</inputFile>
+	<inputFile>CONCEPTS</inputFile>
+	<inputFile>DESCRIPTIONS</inputFile>
+	<inputFile>DESCRIPTIONS_PREVIOUS</inputFile>
+	<inputFile>TCLOSURESTATED</inputFile>
+	<storedProcedure>
+		<name>createLocalizedConceptStatistics()</name>
+	</storedProcedure>
+	<outputFile>
+	<file>LocalizedConceptStatistics.csv</file>
+	<reportHeader>id,term,TotalLocalized,PercentOfHierarchyTotal,NewLocalizedConcepts,PercentOfNewLocalizedTotal</reportHeader>
+	<select>
+	<tableName>cptRootLevel_table6</tableName>
+	</select>
+	<select>
+	<tableName>cptFirstLevel_table6</tableName>
+	</select>
+	</outputFile>
+	<outputDetailFile>
+	<file>LocalizedConceptDetails.csv</file>
+	<reportHeader>Hierarchy,Id,Term,Condition</reportHeader>
+	<storedProcedure>
+	<name>getLocalizedConceptDetails()</name>
+	</storedProcedure>
+	</outputDetailFile>
+</reportConfig>

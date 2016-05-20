@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>11</patternId>
+<name>Existing sufficiently defined concepts that gained a stated intermediate primitive parent and lost active inferred descendant(s)</name>
+<description>Sufficiently defined concepts active in previous release that got a new a stated intermediate primitive ancestor(s) and lost active descendant(s) inferred after classification</description>
+<severity>low</severity>
+<resultFileName>concepts_gain_intermediate_primitives_parent_lost_or_gain_subtypes.json</resultFileName>
+<executionClass>com.termmed.control.patterns.ConceptsGainIntermediatePrimitiveParent</executionClass>
+</patternConfig>

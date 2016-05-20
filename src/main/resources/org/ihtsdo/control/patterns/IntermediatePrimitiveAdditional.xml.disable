@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>10</patternId>
+<name>Additional intermediate primitives in inferred view</name>
+<description>Additional intermediate primitives in inferred view</description>
+<severity>low</severity>
+<resultFileName>intermediate_primitives_additional.json</resultFileName>
+<executionClass>com.termmed.control.patterns.IntermediatePrimitiveAdditional</executionClass>
+</patternConfig>

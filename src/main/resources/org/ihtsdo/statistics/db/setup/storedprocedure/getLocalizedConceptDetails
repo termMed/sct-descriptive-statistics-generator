@@ -1,0 +1,34 @@
+drop procedure if exists getLocalizedConceptDetails;
+
+CREATE PROCEDURE getLocalizedConceptDetails()
+ MODIFIES SQL DATA DYNAMIC RESULT SETS 1
+ BEGIN ATOMIC
+ 
+ DECLARE result CURSOR WITH RETURN FOR SELECT * FROM cpttable6_details FOR READ ONLY;
+
+
+truncate table cpttable6_details;
+
+insert into cpttable6_details
+select distinct d2.term, r.id, d.term,'Existing localized concept'
+from actConcepts r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor
+left join s_descriptions d on d.conceptId=r.id
+and d.active=1
+and d.typeId=900000000000003001;
+
+update cpttable6_details
+set TERM= (select top 1 d.term from s_descriptions d 
+			where d.conceptid=cpttable6_details.id
+			and d.active=1)
+			where cpttable6_details.term is null ;
+
+
+update cpttable6_details
+set CONDITION= 'New localized concept' 
+where exists(select 0 from newConcepts c where c.id=cpttable6_details.id);
+
+open result;
+
+END

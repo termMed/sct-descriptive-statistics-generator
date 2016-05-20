@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>3</patternId>
+<name>Redundantly asserted role groups</name>
+<description>Concepts that have stated (asserted) role groups that are implied by other stated or inherited role groups. For example, if a nested existential restriction represented as a role group is implied by other stated or inherited restrictions, the redundant assertion that will be removed in the Distribution Normal Form (DNF)</description>
+<severity>low</severity>
+<resultFileName>redundanct_rolegroup_to_rolegroup.json</resultFileName>
+<executionClass>com.termmed.control.patterns.RedundancyGroup2Group</executionClass>
+</patternConfig>

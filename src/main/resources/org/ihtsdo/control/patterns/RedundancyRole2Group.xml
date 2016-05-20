@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>2</patternId>
+<name>Redundantly asserted ungrouped roles</name>
+<description>Concepts that have stated (asserted) roles that are implied by other stated or inherited roles or role groups. For example, if A has finding site B (ungrouped role) is implied by another stated or inherited role, the ungrouped role A has finding site B is a redundant assertion that will be removed in the Distribution Normal Form (DNF)</description>
+<severity>low</severity>
+<resultFileName>Redundancy_role_to_rolegroup.json</resultFileName>
+<executionClass>com.termmed.control.patterns.RedundancyRole2Group</executionClass>
+</patternConfig>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<reportConfig>
+	<name>New Concepts</name>
+	<inputFile>STATEDROOTDESC</inputFile>
+	<inputFile>CONCEPTS</inputFile>
+	<inputFile>CONCEPTS_PREVIOUS</inputFile>
+	<inputFile>DESCRIPTIONS</inputFile>
+	<inputFile>TCLOSURESTATED</inputFile>
+	<storedProcedure>
+		<name>createNewConceptStatistics()</name>
+	</storedProcedure>
+	<outputFile>
+	<file>STATISTICS_ON_NEW_CONCEPTS.csv</file>
+	<reportHeader>id,term,NewConcepts,PercentOfTotal,PercentOfAllNew,PercentOfNewSD,PercentOfNewP</reportHeader>
+	<select>
+	<tableName>cptRootLevel_table2</tableName>
+	</select>
+	<select>
+	<tableName>cptFirstLevel_table2</tableName>
+	</select>
+	</outputFile>
+	<outputDetailFile>
+	<file>newConceptsDetailed.csv</file>
+	<reportHeader>Hierarchy,Id,Term,DefinitionStatus</reportHeader>
+	<storedProcedure>
+	<name>getNewConceptDetails()</name>
+	</storedProcedure>
+	</outputDetailFile>
+</reportConfig>

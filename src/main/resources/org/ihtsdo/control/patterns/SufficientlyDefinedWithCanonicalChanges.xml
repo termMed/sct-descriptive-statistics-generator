@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<patternConfig>
+<patternId>22</patternId>
+<name>Sufficiently defined concepts with long canonical form changes</name>
+<description>Sufficiently defined concepts with long canonical form changes</description>
+<severity>low</severity>
+<resultFileName>suffdefined_canonical_changes.json</resultFileName>
+<executionClass>com.termmed.control.patterns.SufficientlyDefinedWithCanonicalChanges</executionClass>
+</patternConfig>
