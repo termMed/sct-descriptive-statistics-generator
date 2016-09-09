@@ -21,9 +21,12 @@
 	</outputFile>
 	<outputDetailFile>
 	<file>newConceptsDetailed.csv</file>
+	<excluyentListPriority>10</excluyentListPriority>
 	<reportHeader>Hierarchy,Id,Term,DefinitionStatus</reportHeader>
+	<sctIdIndex>1</sctIdIndex>
 	<storedProcedure>
 	<name>getNewConceptDetails()</name>
 	</storedProcedure>
+	<createInterestConceptList>true</createInterestConceptList>
 	</outputDetailFile>
 </reportConfig>

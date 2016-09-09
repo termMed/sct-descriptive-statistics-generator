@@ -218,10 +218,10 @@ public class ResourceUtils{
 //		}
 		
 		String file=null;
-		if (new File("stats-gen.jar").exists()){
-			file="stats-gen.jar";
+		if (new File("stats-build.jar").exists()){
+			file="stats-build.jar";
 		}else{
-			file="target/stats-gen.jar";
+			file="target/stats-build.jar";
 		}
 		ZipInputStream zip = new ZipInputStream(new FileInputStream(file));
 		while(true) {

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<reportConfig>
+	<name>Reactivated Concepts</name>
+	<inputFile>STATEDROOTDESC</inputFile>
+	<inputFile>CONCEPTS</inputFile>
+	<inputFile>CONCEPTS_PREVIOUS</inputFile>
+	<inputFile>DESCRIPTIONS</inputFile>
+	<inputFile>TCLOSURESTATED</inputFile>
+	<storedProcedure>
+		<name>createReactivatedConceptStatistics()</name>
+	</storedProcedure>
+	<outputFile>
+	<file>STATISTICS_ON_REACTIVATED_CONCEPTS.csv</file>
+	<reportHeader>id,term,ReactivatedConcepts,PercentOfTotal,PercentOfAllReactivated,PercentOfReactivatedSD,PercentOfReactivatedP</reportHeader>
+	<select>
+	<tableName>cptRootLevel_table9</tableName>
+	</select>
+	<select>
+	<tableName>cptFirstLevel_table9</tableName>
+	</select>
+	</outputFile>
+	<outputDetailFile>
+	<file>reactivatedConceptsDetailed.csv</file>
+	<excluyentListPriority>30</excluyentListPriority>
+	<reportHeader>Hierarchy,Id,Term,DefinitionStatus</reportHeader>
+	<sctIdIndex>1</sctIdIndex>
+	<storedProcedure>
+	<name>getReactivatedConceptDetails()</name>
+	</storedProcedure>
+	<createInterestConceptList>true</createInterestConceptList>
+	<reportListeners>
+		<reportListenerDescriptor>
+		<executionClass>com.termmed.statistics.reportlisteners.ReactConceptDescriptionsInLangRefset</executionClass>
+		<file>ReactConceptDescriptionsInLangRefset.csv</file>
+		<excluyentListPriority>35</excluyentListPriority>
+		<sctIdIndex>1</sctIdIndex>
+		</reportListenerDescriptor>
+	</reportListeners>
+	</outputDetailFile>
+</reportConfig>

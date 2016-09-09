@@ -1,0 +1,32 @@
+drop procedure if exists getReactivatedConceptDetails;
+
+CREATE PROCEDURE getReactivatedConceptDetails()
+ MODIFIES SQL DATA DYNAMIC RESULT SETS 1
+ BEGIN ATOMIC
+ 
+ DECLARE result CURSOR WITH RETURN FOR SELECT * FROM cpttable9_details FOR READ ONLY;
+
+
+truncate table cpttable9_details;
+
+insert into cpttable9_details
+select distinct d2.term, r.id, d.term ,case r.definitionStatusId 
+when 900000000000074008 then 'Primitive'
+else 'Sufficiently defined' end case
+from reactConcepts r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor
+left join s_descriptions d on d.conceptId=r.id
+and d.active=1
+and d.typeId=900000000000003001;
+
+
+update cpttable9_details
+set TERM= (select top 1 d.term from s_descriptions d 
+			where d.conceptid=cpttable9_details.id
+			and d.active=1)
+			where cpttable9_details.term is null ;
+
+open result;
+
+END

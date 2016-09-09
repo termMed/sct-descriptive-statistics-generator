@@ -32,6 +32,7 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
 
 import com.termmed.fileprovider.CurrentFile;
+import com.termmed.fileprovider.DependentFile;
 import com.termmed.statistics.db.setup.DbSetup;
 import com.termmed.statistics.model.ReportConfig;
 import com.termmed.utils.ConversionSnapshotDelta;
@@ -87,6 +88,9 @@ public class ImportManager {
 	/** The language. */
 	boolean language;
 	
+	/** The extension language. */
+	boolean extLanguage;
+	
 	/** The t closure inferred. */
 	boolean tClosureInferred;
 	
@@ -120,10 +124,10 @@ public class ImportManager {
 		CONCEPTS_PREVIOUS("s_concepts_pre", "rf2-concepts",null,null,null,true,"id,active,definitionStatusId",null,null),
 		
 		/** The descriptions. */
-		DESCRIPTIONS("s_descriptions", "rf2-descriptions",null,null,null,false,"effectiveTime,active,conceptId,typeId,term",null,null),
+		DESCRIPTIONS("s_descriptions", "rf2-descriptions",null,null,null,false,"id,effectiveTime,active,conceptId,typeId,term",null,null),
 		
 		/** The descriptions previous. */
-		DESCRIPTIONS_PREVIOUS("s_descriptions_pre", "rf2-descriptions",null,null,null,true,"effectiveTime,active,conceptId,typeId,term",null,null),
+		DESCRIPTIONS_PREVIOUS("s_descriptions_pre", "rf2-descriptions",null,null,null,true,"id,effectiveTime,active,conceptId,typeId,term",null,null),
 		
 		/** The relationships. */
 		RELATIONSHIPS("s_relationships","rf2-relationships",null,null,"stated",false,"sourceId,effectiveTime,active",null,null),
@@ -160,6 +164,9 @@ public class ImportManager {
 		
 		/** The language. */
 		LANGUAGE("s_languages",null,null,null,null,false,null,null,null),
+		
+		/** The language. */
+		EXT_LANGUAGE("s_ext_languages","rf2-language",null,null,null,false,"referencedComponentId",new Integer[]{2},new String[]{"1"}),
 		
 		/** The tclosurestated. */
 		TCLOSURESTATED("s_tclosure_stated","transitive-closure",null,"stated","pre",false,null,null,null),
@@ -503,8 +510,11 @@ public class ImportManager {
 		if (!previousReducedSnapshotFolder.exists()){
 			previousReducedSnapshotFolder.mkdirs();
 		}
-
-
+		if (DependentFile.get()!=null){
+			CurrentFile.get().setSnapshotExtensionLanguage(DependentFile.get().getSnapshotLanguageFile());
+		}else{
+			CurrentFile.get().setSnapshotExtensionLanguage(xmlConfig.getString("extensionLanguageSnapshotFile"));
+		}
 		List<HierarchicalConfiguration> fields = xmlConfig
 				.configurationsAt("reports.reportDescriptor");
 
@@ -532,7 +542,6 @@ public class ImportManager {
 							}
 							concepts=true;
 							break;
-
 						case DESCRIPTIONS:
 							if (descriptions){
 								continue;
@@ -545,37 +554,37 @@ public class ImportManager {
 							}
 							descriptions_pre=true;
 							break;
-
+						case EXT_LANGUAGE:
+							if (extLanguage){
+								continue;
+							}
+							extLanguage=true;
+							
+							break;
 						case RELATIONSHIPS:
 							if (relationships){
 								continue;
 							}
 							relationships=true;
 							break;
-
-
 						case STATEDRELS :
 							if (statedRels){
 								continue;
 							}
 							statedRels=true;
 							break;
-
-
 						case TCLOSUREINFERRED :
 							if (tClosureInferred){
 								continue;
 							}
 							tClosureInferred=true;
 							break;
-
 						case TCLOSURESTATED :
 							if (tClosureStated){
 								continue;
 							}
 							tClosureStated=true;
 							break;
-
 						case CONCEPTS_PREVIOUS :
 							if (concepts_pre){
 								continue;
@@ -594,7 +603,6 @@ public class ImportManager {
 							}
 							statedRels_pre=true;
 							break;
-
 						case TCLOSURESTATED_PREVIOUS :
 							if (tClosureStated_pre){
 								continue;
@@ -812,6 +820,8 @@ public class ImportManager {
 			return txtTClos;
 		} 
 		String txt ="";
+		File txtFile;
+		
 		if (table.getPatternTag().equals("rf2-statedrootdesc")){
 			logger.info("Getting Top Level");
 			if (!releaseDependencies){
@@ -819,13 +829,15 @@ public class ImportManager {
 			}else{
 				txt = CurrentFile.get().getCompleteStatedRelationshipFull();
 			}
-		}else{
+		}else if (table.getTableName().toLowerCase().equals("s_ext_languages")){
+			txt=CurrentFile.get().getSnapshotExtensionLanguage();
+		}else {
 			txt = CurrentFile.get().getFullFileByPattern(table.getPatternTag(),table.getFileNameMustHave(),table.getFileNameDoesntMustHave());
 		}
 		if (txt==null || txt.equals("")){
 			throw new Exception("Full source file not found for pattern:" + table.getPatternTag() );
 		}
-		File txtFile=new File(targetFolder,table.getTableName() + ".txt");
+		txtFile=new File(targetFolder,table.getTableName() + ".txt");
 		logger.info("Getting snapshot from file " + txt);
 		if (table.getFields()!=null){
 			outputFields=table.getFields().split(",");

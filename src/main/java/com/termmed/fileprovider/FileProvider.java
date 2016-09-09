@@ -35,73 +35,73 @@ public class FileProvider {
 
 	/** The Constant TEMP_SORTING_FOLDER. */
 	private static final String TEMP_SORTING_FOLDER = "tmpWorking";
-	
+
 	/** The Constant TEMP_SORTED_FINAL_FOLDER. */
 	private static final String TEMP_SORTED_FINAL_FOLDER = "tmpSortedFinal";
-	
+
 	/** The Constant SNAPSHOT_FOLDER. */
 	private static final String SNAPSHOT_FOLDER = "snapshot";
-	
+
 	/** The Constant COMPLETED_FILES_FOLDER. */
 	private static final String COMPLETED_FILES_FOLDER = "completedFiles";
-	
+
 	/** The concept file. */
 	private String conceptFile ;
-	
+
 	/** The description file. */
 	private String descriptionFile ;
-	
+
 	/** The relationship file. */
 	private String relationshipFile ;
-	
+
 	/** The attribute value file. */
 	private String attributeValueFile ;
-	
+
 	/** The simple map file. */
 	private String simpleMapFile ;
-	
+
 	/** The association file. */
 	private String associationFile ;
-	
+
 	/** The language file. */
 	private String languageFile ;
-	
+
 	/** The refset simple file. */
 	private String refsetSimpleFile ;
-	
+
 	/** The stated relationship file. */
 	private String statedRelationshipFile ;
-	
+
 	/** The text definition file. */
 	private String textDefinitionFile ;
 	/* Snapshot files */
 	/** The snapshot concept file. */
 	private String snapshotConceptFile ;
-	
+
 	/** The snapshot description file. */
 	private String snapshotDescriptionFile ;
-	
+
 	/** The snapshot relationship file. */
 	private String snapshotRelationshipFile ;
-	
+
 	/** The snapshot attribute value file. */
 	private String snapshotAttributeValueFile ;
-	
+
 	/** The snapshot simple map file. */
 	private String snapshotSimpleMapFile ;
-	
+
 	/** The snapshot association file. */
 	private String snapshotAssociationFile ;
-	
+
 	/** The snapshot language file. */
 	private String snapshotLanguageFile ;
-	
+
 	/** The snapshot refset simple file. */
 	private String snapshotRefsetSimpleFile ;
-	
+
 	/** The snapshot stated relationship file. */
 	private String snapshotStatedRelationshipFile ;
-	
+
 	/** The snapshot text definition file. */
 	private String snapshotTextDefinitionFile ;
 
@@ -123,60 +123,66 @@ public class FileProvider {
 
 	/** The release date. */
 	private String releaseDate;
-	
+
 	/** The complete stated relationship snapshot. */
 	private String completeStatedRelationshipSnapshot;
-	
+
 	/** The complete relationship snapshot. */
 	private String completeRelationshipSnapshot;
-	
+
 	/** The complete description snapshot. */
 	private String completeDescriptionSnapshot;
-	
+
 	/** The release dependencies full folders. */
 	private HashSet<String> releaseDependenciesFullFolders;
-	
+
 	/** The base folder. */
 	private File baseFolder;
-	
+
 	/** The complete stated relationship full. */
 	private String completeStatedRelationshipFull;
-	
+
 	/** The complete relationship full. */
 	private String completeRelationshipFull;
-	
+
 	/** The complete description full. */
 	private String completeDescriptionFull;
-	
+
 	/** The new concept file. */
 	private File newConceptFile;
-	
+
 	/** The changed concept file. */
 	private File changedConceptFile;
-	
+
 	/** The intermediate primitive file. */
 	private String intermediatePrimitiveFile;
-	
+
 	/** The complete concept snapshot. */
 	private String completeConceptSnapshot;
-	
+
 	/** The complete concept full. */
 	private String completeConceptFull;
-	
+
 	/** The transitive closure stated file. */
 	private String transitiveClosureStatedFile;
-	
+
 	/** The transitive closure inferred file. */
 	private String transitiveClosureInferredFile;
-	
+
 	/** The concept terms. */
 	private HashMap<Long, String> conceptTerms;
-	
+
 	/** The proximal primitive file. */
 	private String proximalPrimitiveFile;
-	
+
 	/** The canonical changes on sd concepts file. */
 	private String canonicalChangesOnSDConceptsFile;
+
+	private String snapshotExtensionLanguage;
+
+	private HashSet<String> refsetSimpleFiles;
+
+	private HashSet<String> snapshotRefsetSimpleFiles;
 
 
 	/**
@@ -291,6 +297,16 @@ public class FileProvider {
 		return refsetSimpleFile;
 	}
 
+	public HashSet<String> getRefsetSimpleFiles() throws IOException, Exception {
+		if (refsetSimpleFiles==null){
+			refsetSimpleFiles=FileHelper.getFilesFromFolderWithPattern(fullFolder.getAbsolutePath(), "rf2-simple", null, null, false, false);
+			if (refsetSimpleFiles==null){
+				refsetSimpleFiles=new HashSet<String>();
+			}
+		}
+		return refsetSimpleFiles;
+	}
+
 	/**
 	 * Gets the stated relationship file.
 	 *
@@ -333,8 +349,10 @@ public class FileProvider {
 			snapshotConceptFile=FileHelper.getFile(snapshotFolder, "rf2-concepts", null, null, null, false, false);
 			if (snapshotConceptFile==null){
 				getConceptFile();
-				snapshotConceptFile=new File(snapshotFolder,new File(conceptFile).getName().toLowerCase().replace("full","snapshot")).getAbsolutePath();
-				ConversionSnapshotDelta.snapshotFile(new File(conceptFile), tempSortingFolder, tempSortedFinalfolder, new File(snapshotConceptFile), releaseDate, new int[]{0,1}, 0, 1, null, null, null);
+				if (conceptFile!=null){
+					snapshotConceptFile=new File(snapshotFolder,new File(conceptFile).getName().toLowerCase().replace("full","snapshot")).getAbsolutePath();
+					ConversionSnapshotDelta.snapshotFile(new File(conceptFile), tempSortingFolder, tempSortedFinalfolder, new File(snapshotConceptFile), releaseDate, new int[]{0,1}, 0, 1, null, null, null);
+				}
 			}
 		}
 		return snapshotConceptFile;
@@ -352,8 +370,10 @@ public class FileProvider {
 			snapshotDescriptionFile=FileHelper.getFile(snapshotFolder, "rf2-descriptions", null, null, null, false, false);
 			if (snapshotDescriptionFile==null){
 				getDescriptionFile();
-				snapshotDescriptionFile=new File(snapshotFolder,new File(descriptionFile).getName().toLowerCase().replace("full","snapshot")).getAbsolutePath();
-				ConversionSnapshotDelta.snapshotFile(new File(descriptionFile), tempSortingFolder, tempSortedFinalfolder, new File(snapshotDescriptionFile), releaseDate, new int[]{0,1}, 0, 1, null, null, null);
+				if (descriptionFile!=null){
+					snapshotDescriptionFile=new File(snapshotFolder,new File(descriptionFile).getName().toLowerCase().replace("full","snapshot")).getAbsolutePath();
+					ConversionSnapshotDelta.snapshotFile(new File(descriptionFile), tempSortingFolder, tempSortedFinalfolder, new File(snapshotDescriptionFile), releaseDate, new int[]{0,1}, 0, 1, null, null, null);
+				}
 			}
 		}
 		return snapshotDescriptionFile;
@@ -371,8 +391,11 @@ public class FileProvider {
 			snapshotRelationshipFile=FileHelper.getFile(snapshotFolder, "rf2-relationships", null, null, "stated", false, false);
 			if (snapshotRelationshipFile==null){
 				getRelationshipFile();
-				snapshotRelationshipFile=new File(snapshotFolder,new File(relationshipFile).getName().toLowerCase().replace("full","snapshot")).getAbsolutePath();
-				ConversionSnapshotDelta.snapshotFile(new File(relationshipFile), tempSortingFolder, tempSortedFinalfolder, new File(snapshotRelationshipFile), releaseDate, new int[]{0,1}, 0, 1, null, null, null);
+
+				if (relationshipFile!=null){
+					snapshotRelationshipFile=new File(snapshotFolder,new File(relationshipFile).getName().toLowerCase().replace("full","snapshot")).getAbsolutePath();
+					ConversionSnapshotDelta.snapshotFile(new File(relationshipFile), tempSortingFolder, tempSortedFinalfolder, new File(snapshotRelationshipFile), releaseDate, new int[]{0,1}, 0, 1, null, null, null);
+				}
 			}
 		}
 		return snapshotRelationshipFile;
@@ -447,8 +470,10 @@ public class FileProvider {
 			snapshotLanguageFile=FileHelper.getFile(snapshotFolder, "rf2-language", null, null, null, false, false);
 			if (snapshotLanguageFile==null){
 				getLanguageFile();
-				snapshotLanguageFile=new File(snapshotFolder,new File(languageFile).getName().toLowerCase().replace("full","snapshot")).getAbsolutePath();
-				ConversionSnapshotDelta.snapshotFile(new File(languageFile), tempSortingFolder, tempSortedFinalfolder, new File(snapshotLanguageFile), releaseDate, new int[]{0,1}, 0, 1, null, null, null);
+				if (languageFile!=null){
+					snapshotLanguageFile=new File(snapshotFolder,new File(languageFile).getName().toLowerCase().replace("full","snapshot")).getAbsolutePath();
+					ConversionSnapshotDelta.snapshotFile(new File(languageFile), tempSortingFolder, tempSortedFinalfolder, new File(snapshotLanguageFile), releaseDate, new int[]{0,1}, 0, 1, null, null, null);
+				}
 			}
 		}
 		return snapshotLanguageFile;
@@ -473,6 +498,21 @@ public class FileProvider {
 		return snapshotRefsetSimpleFile;
 	}
 
+	public HashSet<String> getSnapshotRefsetSimpleFiles() throws IOException, Exception {
+		if (snapshotRefsetSimpleFiles==null){
+			snapshotRefsetSimpleFiles=FileHelper.getFilesFromFolderWithPattern(snapshotFolder.getAbsolutePath(),  "rf2-simple", null, null, false, false);
+			if (snapshotRefsetSimpleFiles==null ){
+				getRefsetSimpleFiles();
+				snapshotRefsetSimpleFiles=new HashSet<String>();
+				for (String refsetSimpleFile:refsetSimpleFiles){
+					String snapshotRefsetSimpleFile=new File(snapshotFolder,new File(refsetSimpleFile).getName().toLowerCase().replace("full","snapshot")).getAbsolutePath();
+					ConversionSnapshotDelta.snapshotFile(new File(refsetSimpleFile), tempSortingFolder, tempSortedFinalfolder, new File(snapshotRefsetSimpleFile), releaseDate, new int[]{0,1}, 0, 1, null, null, null);
+					snapshotRefsetSimpleFiles.add(snapshotRefsetSimpleFile);
+				}	
+			}
+		}
+		return snapshotRefsetSimpleFiles;
+	}
 	/**
 	 * Gets the snapshot stated relationship file.
 	 *
@@ -485,8 +525,10 @@ public class FileProvider {
 			snapshotStatedRelationshipFile=FileHelper.getFile(snapshotFolder, "rf2-relationships", null, "stated", null, false, false);
 			if (snapshotStatedRelationshipFile==null){
 				getStatedRelationshipFile();
-				snapshotStatedRelationshipFile=new File(snapshotFolder,new File(statedRelationshipFile).getName().toLowerCase().replace("full","snapshot")).getAbsolutePath();
-				ConversionSnapshotDelta.snapshotFile(new File(statedRelationshipFile), tempSortingFolder, tempSortedFinalfolder, new File(snapshotStatedRelationshipFile), releaseDate, new int[]{0,1}, 0, 1, null, null, null);
+				if (statedRelationshipFile!=null){
+					snapshotStatedRelationshipFile=new File(snapshotFolder,new File(statedRelationshipFile).getName().toLowerCase().replace("full","snapshot")).getAbsolutePath();
+					ConversionSnapshotDelta.snapshotFile(new File(statedRelationshipFile), tempSortingFolder, tempSortedFinalfolder, new File(snapshotStatedRelationshipFile), releaseDate, new int[]{0,1}, 0, 1, null, null, null);
+				}
 			}
 		}
 		return snapshotStatedRelationshipFile;
@@ -683,7 +725,7 @@ public class FileProvider {
 		}
 		return completeDescriptionSnapshot;
 	}
-	
+
 	/**
 	 * Gets the complete description full.
 	 *
@@ -841,7 +883,9 @@ public class FileProvider {
 			if (releaseDependenciesFullFolders!=null){
 				HashSet<String> tmpFiles=new HashSet<String>();
 				for (String fullFolder:releaseDependenciesFullFolders){
+					System.out.println("folder:" +fullFolder);
 					String tmpFile=FileHelper.getFile(new File(fullFolder), "rf2-relationships", null, "stated", null, false, false);
+					System.out.println("file:" + tmpFile);
 					tmpFiles.add(tmpFile);
 				}
 				String relsFull=getStatedRelationshipFile();
@@ -1136,8 +1180,8 @@ public class FileProvider {
 	 * @throws NumberFormatException the number format exception
 	 */
 	private void setTerms(String file) throws UnsupportedEncodingException,
-			FileNotFoundException, IOException, NumberFormatException {
-//		System.out.println("desc file:" + file);
+	FileNotFoundException, IOException, NumberFormatException {
+		//		System.out.println("desc file:" + file);
 		BufferedReader br=FileHelper.getReader(file);
 		br.readLine();
 		String line;
@@ -1187,6 +1231,28 @@ public class FileProvider {
 	 */
 	public String getCanonicalChangesOnSDConceptsFile() {
 		return canonicalChangesOnSDConceptsFile;
+	}
+
+	public void setSnapshotExtensionLanguage(String snapshotExtensionLanguage) {
+		if (snapshotExtensionLanguage!=null && snapshotExtensionLanguage.trim().equals("")){
+			this.snapshotExtensionLanguage=null;
+		}else{
+			this.snapshotExtensionLanguage=snapshotExtensionLanguage;
+		}
+	}
+
+	public String getSnapshotExtensionLanguage() {
+		if (snapshotExtensionLanguage==null){
+			File snapshotExtensionLanguageFile=new File(snapshotFolder,"snap_ext_lang_empty.txt");
+			try {
+				snapshotExtensionLanguageFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			snapshotExtensionLanguage=snapshotExtensionLanguageFile.getAbsolutePath();
+
+		}
+		return snapshotExtensionLanguage;
 	}
 
 }

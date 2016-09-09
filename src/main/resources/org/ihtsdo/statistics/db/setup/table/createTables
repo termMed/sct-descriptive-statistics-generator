@@ -1,11 +1,15 @@
 drop PROCEDURE if exists createGeneralStatistics;
 drop PROCEDURE if exists createNewConceptStatistics;
+drop PROCEDURE if exists createReactivatedConceptStatistics;
 drop PROCEDURE if exists createRetiredConceptStatistics;
-drop PROCEDURE if exists createChangedConceptStatistics;
+drop PROCEDURE if exists createChangedConceptDefinitionStatistics;
+drop PROCEDURE if exists createChangedConceptDesignationStatistics;
 drop PROCEDURE if exists createLocalizedConceptStatistics;
 drop PROCEDURE if exists getNewConceptDetails;
+drop PROCEDURE if exists getReactivatedConceptDetails;
 drop PROCEDURE if exists getRetiredConceptDetails;
-drop PROCEDURE if exists getChangedConceptDetails;
+drop PROCEDURE if exists getChangedConceptDefinitionDetails;
+drop PROCEDURE if exists getChangedConceptDesignationDetails;
 drop PROCEDURE if exists getLocalizedConceptDetails;
 
 -- DROP TABLE IF EXISTS testtime;
@@ -34,6 +38,7 @@ create text table s_concepts (id bigint NOT NULL,
  
 drop table if exists  s_descriptions;
 create text table s_descriptions (
+  id bigint NOT NULL ,
   effectiveTime integer NOT NULL ,
   active tinyint NOT NULL ,
   conceptId bigint NOT NULL ,
@@ -42,11 +47,16 @@ create text table s_descriptions (
  
 drop table if exists s_descriptions_pre;
 create text table s_descriptions_pre (
+  id bigint NOT NULL ,
   effectiveTime integer NOT NULL ,
   active tinyint NOT NULL ,
   conceptId bigint NOT NULL ,
   typeId bigint NOT NULL,
   term varchar(255) NOT NULL );
+  
+ drop table if exists s_ext_languages;
+create text table s_ext_languages (
+  referencedComponentId bigint NOT NULL );
   
 drop table if exists  s_statedrels;
 CREATE text TABLE s_statedrels (
@@ -104,6 +114,11 @@ CREATE TABLE CPTFIRSTLEVEL (
   
 drop table if exists  newConcepts;
 create table newConcepts (id bigint NOT NULL,
+  active tinyint ,
+  definitionStatusId bigint );
+  
+drop table if exists  reactConcepts;
+create table reactConcepts (id bigint NOT NULL,
   active tinyint ,
   definitionStatusId bigint );
   
@@ -176,9 +191,7 @@ CREATE TABLE CPTROOTLEVEL_TABLE4 (
 		STATEDDEFCHANGE INTEGER,
 		INFERREDDEFCHANGE INTEGER,
 		PRIMITIVE2SD INTEGER,
-		SD2PRIMITIVE INTEGER,
-		DESCRIPTIONCHANGE INTEGER,
-		FSNCHANGE INTEGER
+		SD2PRIMITIVE INTEGER
 	);
 
 drop table if exists STATEDCHANGES ;
@@ -196,18 +209,36 @@ defStatus tinyint);
 drop table if exists  PRIM2SD;
 create table PRIM2SD (id bigint ,
 defStatus tinyint );
-  
-drop table if exists DESCCH ;
-create table DESCCH (id bigint  ,
-defStatus tinyint);
 
 drop table if exists  FSNCH;
 create table FSNCH (id bigint ,
  term varchar(522),
-defStatus tinyint );
+did bigint );
   
 drop table if exists  ANYCH;
 create table ANYCH (id bigint  );
+
+
+drop table if exists pointToSourceChanges ;
+create table pointToSourceChanges (id bigint  , term varchar(522),
+did bigint);
+
+
+drop table if exists retiredDesc ;
+create table retiredDesc (id bigint  , term varchar(522),
+did bigint);
+
+drop table if exists newDesc ;
+create table newDesc (conceptId bigint  , term varchar(522),
+did bigint );
+
+drop table if exists newDescExistConcept ;
+create table newDescExistConcept (id bigint  , term varchar(522),
+did bigint);
+
+drop table if exists reactivDesc ;
+create table reactivDesc (id bigint  , term varchar(522),
+did bigint);
 
 DROP TABLE if exists CPTFIRSTLEVEL_TABLE4;
 
@@ -218,9 +249,7 @@ CREATE TABLE CPTFIRSTLEVEL_TABLE4 (
 		STATEDDEFCHANGE INTEGER,
 		INFERREDDEFCHANGE INTEGER,
 		PRIMITIVE2SD INTEGER,
-		SD2PRIMITIVE INTEGER,
-		DESCRIPTIONCHANGE INTEGER,
-		FSNCHANGE INTEGER
+		SD2PRIMITIVE INTEGER
 	);
 
 DROP TABLE if exists CPTROOTLEVEL_TABLE5;
@@ -232,9 +261,7 @@ CREATE TABLE CPTROOTLEVEL_TABLE5 (
 		PERCOFSTATEDDEFCHANGE DECIMAL(5 , 2),
 		PERCOFINFERREDDEFCHANGE DECIMAL(5 , 2),
 		PERCOFPRIMITIVE2SD DECIMAL(5 , 2),
-		PERCOFSD2PRIMITIVE DECIMAL(5 , 2),
-		PERCOFDESCRIPTIONCHANGE DECIMAL(5 , 2),
-		PERCOFFSNCHANGE DECIMAL(5 , 2)
+		PERCOFSD2PRIMITIVE DECIMAL(5 , 2)
 	);
 
 DROP TABLE if exists CPTFIRSTLEVEL_TABLE5;
@@ -246,12 +273,71 @@ CREATE TABLE CPTFIRSTLEVEL_TABLE5 (
 		PERCOFSTATEDDEFCHANGE DECIMAL(5 , 2),
 		PERCOFINFERREDDEFCHANGE DECIMAL(5 , 2),
 		PERCOFPRIMITIVE2SD DECIMAL(5 , 2),
-		PERCOFSD2PRIMITIVE DECIMAL(5 , 2),
-		PERCOFDESCRIPTIONCHANGE DECIMAL(5 , 2),
-		PERCOFFSNCHANGE DECIMAL(5 , 2)
+		PERCOFSD2PRIMITIVE DECIMAL(5 , 2)
+	);
+		
+drop table if exists  CPTROOTLEVEL_TABLE7;
+CREATE TABLE CPTROOTLEVEL_TABLE7 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		ANYCHANGE INTEGER,
+		FSNCHANGE INTEGER,
+		DESCINSOURCE INTEGER,
+		RETIREDDESC INTEGER,
+		NEWDESC INTEGER,
+		REACTIVATEDDESC INTEGER
 	);
 	
+DROP TABLE if exists CPTFIRSTLEVEL_TABLE7;
+
+CREATE TABLE CPTFIRSTLEVEL_TABLE7 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		ANYCHANGE INTEGER,
+		FSNCHANGE INTEGER,
+		DESCINSOURCE INTEGER,
+		RETIREDDESC INTEGER,
+		NEWDESC INTEGER,
+		REACTIVATEDDESC INTEGER
+	);
+
+DROP TABLE if exists cpttable7_details;
+
+CREATE TABLE cpttable7_details (
+		ANCESTOR VARCHAR(255),
+		ID BIGINT,
+		TERM VARCHAR(522),
+		CHANGETYPE VARCHAR(50),
+		DID BIGINT,
+		PRIORITY TINYINT
+	);
+DROP TABLE if exists CPTROOTLEVEL_TABLE8;
+
+CREATE TABLE CPTROOTLEVEL_TABLE8 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		PERCOFANYCHANGE DECIMAL(5 , 2),
+		PERCOFFSNCHANGE DECIMAL(5 , 2),
+		PERCOFDESCINSOURCE DECIMAL(5 , 2),
+		PERCOFRETIREDDESC DECIMAL(5 , 2),
+		PERCOFNEWDESC DECIMAL(5 , 2),
+		PERCOFREACTIVATEDDESC DECIMAL(5 , 2)
+	);
+
+DROP TABLE if exists CPTFIRSTLEVEL_TABLE8;
+
+CREATE TABLE CPTFIRSTLEVEL_TABLE8 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		PERCOFANYCHANGE DECIMAL(5 , 2),
+		PERCOFFSNCHANGE DECIMAL(5 , 2),
+		PERCOFDESCINSOURCE DECIMAL(5 , 2),
+		PERCOFRETIREDDESC DECIMAL(5 , 2),
+		PERCOFNEWDESC DECIMAL(5 , 2),
+		PERCOFREACTIVATEDDESC DECIMAL(5 , 2)
+	);
 	
+DROP TABLE if exists cpttable2_details;
 CREATE TABLE cpttable2_details (
 		ANCESTOR VARCHAR(255),
 		ID BIGINT,
@@ -259,6 +345,7 @@ CREATE TABLE cpttable2_details (
 		DEFINITIONSTATUS VARCHAR(22)
 	);
 	
+DROP TABLE if exists cpttable3_details;
 CREATE TABLE cpttable3_details (
 		ANCESTOR VARCHAR(255),
 		ID BIGINT,
@@ -266,6 +353,7 @@ CREATE TABLE cpttable3_details (
 		REASON VARCHAR(18)
 	);
 	
+DROP TABLE if exists cpttable4_details;
 CREATE TABLE cpttable4_details (
 		ANCESTOR VARCHAR(255),
 		ID BIGINT,
@@ -296,6 +384,7 @@ CREATE TABLE CPTFIRSTLEVEL_TABLE6 (
 		PercentOfNewLocTotal DECIMAL(5 , 2)
 	);
 	
+DROP TABLE if exists cpttable6_details;
 CREATE TABLE cpttable6_details (
 		ANCESTOR VARCHAR(255),
 		ID BIGINT,
@@ -303,3 +392,33 @@ CREATE TABLE cpttable6_details (
 		CONDITION VARCHAR(40)
 	);
 	
+drop table if exists  CPTROOTLEVEL_TABLE9;
+CREATE TABLE CPTROOTLEVEL_TABLE9 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		REACTCONCEPTS INTEGER DEFAULT 0,
+		PERCENTOFTOTAL DECIMAL(5 , 2) DEFAULT 0,
+		PERCENTOFALLREACTIVATED DECIMAL(5 , 2) DEFAULT 0,
+		PERCENTOFREACTIVATEDSD DECIMAL(5 , 2) DEFAULT 0,
+		PERCENTOFREACTIVATEDP DECIMAL(5 , 2) DEFAULT 0
+	);
+
+drop table if exists CPTFIRSTLEVEL_TABLE9 ;
+CREATE TABLE CPTFIRSTLEVEL_TABLE9 (
+		ID BIGINT,
+		TERM VARCHAR(255),
+		REACTCONCEPTS INTEGER DEFAULT 0,
+		PERCENTOFHIERARCHY DECIMAL(5 , 2) DEFAULT 0,
+		PERCENTOFALLREACTIVATED DECIMAL(5 , 2) DEFAULT 0,
+		PERCENTOFREACTIVATEDSD DECIMAL(5 , 2) DEFAULT 0,
+		PERCENTOFREACTIVATEDP DECIMAL(5 , 2) DEFAULT 0
+	);
+	
+
+DROP TABLE if exists cpttable9_details;
+CREATE TABLE cpttable9_details (
+		ANCESTOR VARCHAR(255),
+		ID BIGINT,
+		TERM VARCHAR(255),
+		DEFINITIONSTATUS VARCHAR(22)
+	);

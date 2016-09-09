@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <reportConfig>
-	<name>Changed Concepts</name>
+	<name>Changed Concept Definition</name>
 	<inputFile>STATEDROOTDESC</inputFile>
 	<inputFile>CONCEPTS</inputFile>
 	<inputFile>CONCEPTS_PREVIOUS</inputFile>
-	<inputFile>DESCRIPTIONS</inputFile>
 	<inputFile>STATEDRELS</inputFile>
 	<inputFile>RELATIONSHIPS</inputFile>
 	<inputFile>TCLOSURESTATED</inputFile>
 	<storedProcedure>
-		<name>createChangedConceptStatistics(?)</name>
+		<name>createChangedConceptDefinitionStatistics(?)</name>
 		<param><name>releaseDate</name><order>1</order><sqlType>INT</sqlType></param>
 	</storedProcedure>
 	<outputFile>
-	<file>STATISTICS_ON_EXISTING_CONCEPTS_count.csv</file>
-	<reportHeader>id,term,AnyChange,StatedDefChange,InferredDefChange,Primitive2SD,SD2Primitive,DescriptionChange,FSNChange</reportHeader>
+	<file>STATISTICS_ON_EXISTING_CONCEPTS_DEFINITION_count.csv</file>
+	<reportHeader>id,term,AnyChange,StatedDefChange,InferredDefChange,Primitive2SD,SD2Primitive</reportHeader>
 	<select>
 	<tableName>cptRootLevel_table4</tableName>
 	</select>
@@ -23,8 +22,8 @@
 	</select>
 	</outputFile>
 	<outputFile>
-	<file>STATISTICS_ON_EXISTING_CONCEPTS_percent.csv</file>
-	<reportHeader>id,term,PercOfAnyChange,PercOfStatedDefChange,PercOfInferredDefChange,PercOfPrimitive2SD,PercOfSD2Primitive,PercOfDescriptionChange,PercOfFSNChange</reportHeader>
+	<file>STATISTICS_ON_EXISTING_CONCEPTS_DEFINITION_percent.csv</file>
+	<reportHeader>id,term,PercOfAnyChange,PercOfStatedDefChange,PercOfInferredDefChange,PercOfPrimitive2SD,PercOfSD2Primitive</reportHeader>
 	<select>
 	<tableName>cptRootLevel_table5</tableName>
 	</select>
@@ -33,10 +32,12 @@
 	</select>
 	</outputFile>
 	<outputDetailFile>
-	<file>changedConceptDetails.csv</file>
+	<file>changedConceptDefinitionDetails.csv</file>
 	<reportHeader>Hierarchy,Id,Term,ChangeType,DefinitionStatus</reportHeader>
+	<sctIdIndex>1</sctIdIndex>
 	<storedProcedure>
-	<name>getChangedConceptDetails()</name>
+	<name>getChangedConceptDefinitionDetails()</name>
 	</storedProcedure>
+	<createInterestConceptList>true</createInterestConceptList>
 	</outputDetailFile>
 </reportConfig>

@@ -46,6 +46,9 @@ public class ReportConfig implements java.io.Serializable {
 	
 	/** The output detail file. */
 	private ArrayList<OutputDetailFile> outputDetailFile;
+
+	private Boolean createInterestConceptList;
+	
 	
 	/**
 	 * Gets the input file.
@@ -136,4 +139,13 @@ public class ReportConfig implements java.io.Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public Boolean getCreateInterestConceptList() {
+		return createInterestConceptList;
+	}
+
+	public void setCreateInterestConceptList(Boolean createInterestConceptList) {
+		this.createInterestConceptList = createInterestConceptList;
+	}
+
 }

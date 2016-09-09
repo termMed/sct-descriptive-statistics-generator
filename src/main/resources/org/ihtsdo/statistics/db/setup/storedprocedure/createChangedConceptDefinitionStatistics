@@ -1,6 +1,6 @@
-drop procedure if exists createChangedConceptStatistics;
+drop procedure if exists createChangedConceptDefinitionStatistics;
 
-CREATE PROCEDURE createChangedConceptStatistics(releaseDate INTEGER)
+CREATE PROCEDURE createChangedConceptDefinitionStatistics(releaseDate INTEGER)
  MODIFIES SQL DATA
  BEGIN ATOMIC
  
@@ -8,8 +8,6 @@ declare statedCh INTEGER;
 declare inferredCh INTEGER;
 declare vprim2SD INTEGER;
 declare vSD2Prim INTEGER;
-declare descrCh INTEGER;
-declare vFsnCh INTEGER;
 declare vAnyCh INTEGER;
 declare totCpt INTEGER;
 
@@ -35,8 +33,7 @@ truncate table cptRootLevel_table4;
 -- insert into testtime values (1,'cptRootLevel_table4' , CURRENT_TIMESTAMP);
 insert into cptRootLevel_table4 
 values ( 138875005, 'SNOMED CT Concept (SNOMED RT+CTV3)'  , cast(0 as integer) , cast(0 as integer) 
-,cast(0 as integer) , cast(0 as integer) ,cast(0 as integer) 
-,cast(0 as integer),cast(0 as integer) );
+,cast(0 as integer) , cast(0 as integer) ,cast(0 as integer)  );
 
 -- insert into testtime values (2,'cptRootLevel_table4' , CURRENT_TIMESTAMP);
 
@@ -61,9 +58,6 @@ insert into inferredChanges
 				from actConcepts a inner join s_relationships r
 				on r.sourceId=a.id
 				where r.effectiveTime=releaseDate;
-
--- insert into testtime values (1,'descCh' , CURRENT_TIMESTAMP);
-
 
 -- insert into testtime values (1,'statedCh and inferredCh' , CURRENT_TIMESTAMP);
 select count(*) into statedCh
@@ -117,54 +111,7 @@ from SD2prim;
 
 Update cptRootLevel_table4
 set SD2Primitive = vSD2Prim;
-
-truncate table descCh ;
-
--- insert into testtime values (1,'descCh' , CURRENT_TIMESTAMP);
-insert into descCh
-select distinct c.id,case c.definitionStatusId 
-		when 900000000000074008 then 1
-		else 0 end case
-	from actConcepts c
-	inner join s_descriptions d
-	on d.conceptId=c.id
-	where d.conceptId=c.id and d.effectivetime=releaseDate;
-
--- insert into testtime values (2,'descCh' , CURRENT_TIMESTAMP);
-
-select count(*) into descrCh
-from descCh;
-
-Update cptRootLevel_table4
-set DescriptionChange = descrCh;
-		
-truncate table fsnCh ;
-
--- insert into testtime values (1,'fsnCh' , CURRENT_TIMESTAMP);
-insert into fsnCh 				
-select distinct c.id,d.term + ' -Prev.FSN: ' + d2.term,case c.definitionStatusId 
-		when 900000000000074008 then 1
-		else 0 end case
-	from actConcepts c
-	inner join s_descriptions d
-	on d.conceptId=c.id
-	and d.effectivetime=releaseDate and d.typeId=900000000000003001 and d.active=1
-	inner join s_descriptions d2
-	on d2.conceptId=c.id
-	and d2.effectivetime=releaseDate and d2.typeId=900000000000003001 and d2.active=0
-	where d.conceptId=c.id and d.effectivetime=releaseDate and d.typeId=900000000000003001 and d.active=1
-	and d2.conceptId=c.id and d2.effectivetime=releaseDate and d2.typeId=900000000000003001 and d2.active=0;
-
--- insert into testtime values (2,'fsnCh' , CURRENT_TIMESTAMP);
-
-
 truncate table actConcepts;
-
-select count(*) into vFsnCh
-from fsnCh;
-
-Update cptRootLevel_table4
-set FSNChange = vFsnCh;
 
 
 truncate table anyCh ;
@@ -177,9 +124,7 @@ insert into anyCh
 	union
 	select id from prim2SD
 	union
-	select id from SD2prim
-	union
-	select id from descCh;
+	select id from SD2prim;
 
 -- insert into testtime values (2,'anyCh' , CURRENT_TIMESTAMP);
 
@@ -196,7 +141,6 @@ truncate table cptFirstLevel_table4;
 insert into cptFirstLevel_table4
 select r.sourceId as id, r.term , cast(0 as integer) as AnyChange, cast(0 as integer) as StatedDefChange
 ,cast(0 as integer) as InferredDefChange, cast(0 as integer) as Primitive2SD,cast(0 as integer) as SD2Primitive
-,cast(0 as integer) as DescriptionChange,cast(0 as integer) as FSNChange 
 from s_statedrootdesc r;
 
 -- insert into testtime values (2,'cptFirstLevel_table4' , CURRENT_TIMESTAMP);
@@ -240,27 +184,6 @@ set SD2Primitive =(select count(*)
 					where t.ancestor=cptFirstLevel_table4.id);
 -- insert into testtime values (2,'SD2Primitive' , CURRENT_TIMESTAMP);
 
--- insert into testtime values (1,'DescriptionChange' , CURRENT_TIMESTAMP);
-Update cptFirstLevel_table4
-set DescriptionChange =(select count(*) 
-					from descCh c
-					inner join s_tclosure_stated t 
-					on t.descendant=c.id
-					where t.ancestor=cptFirstLevel_table4.id);
-
--- insert into testtime values (2,'DescriptionChange' , CURRENT_TIMESTAMP);
-
--- insert into testtime values (1,'FSNChange' , CURRENT_TIMESTAMP);
-
-Update cptFirstLevel_table4
-set FSNChange =(select count(*) 
-					from fsnCh c
-					inner join s_tclosure_stated t 
-					on t.descendant=c.id
-					where t.ancestor=cptFirstLevel_table4.id);
-
--- insert into testtime values (2,'FSNChange' , CURRENT_TIMESTAMP);
-
 -- insert into testtime values (1,'AnyChange' , CURRENT_TIMESTAMP);
 Update cptFirstLevel_table4
 set AnyChange =(select count(*) 
@@ -277,8 +200,7 @@ truncate table cptRootLevel_table5;
 -- insert into testtime values (1,'cptRootLevel_table5' , CURRENT_TIMESTAMP);
 insert into cptRootLevel_table5 
 values ( 138875005, 'SNOMED CT Concept (SNOMED RT+CTV3)' , cast(0 as decimal(5,2)) , cast(0 as decimal(5,2)) 
-,cast(0 as decimal(5,2)) , cast(0 as decimal(5,2)) ,cast(0 as decimal(5,2)) 
-,cast(0 as decimal(5,2)) ,cast(0 as decimal(5,2)) );
+,cast(0 as decimal(5,2)) , cast(0 as decimal(5,2)) ,cast(0 as decimal(5,2)) );
 
 -- insert into testtime values (2,'cptRootLevel_table5' , CURRENT_TIMESTAMP);
 
@@ -295,12 +217,6 @@ set PercOfPrimitive2SD =convert(100, decimal(16,2)) * vprim2SD / totCpt;
 Update cptRootLevel_table5
 set PercOfSD2Primitive = convert(100, decimal(16,2)) * vSD2Prim / totCpt;
 
-Update cptRootLevel_table5
-set PercOfDescriptionChange = convert(100, decimal(16,2)) * descrCh / totCpt;
-
-Update cptRootLevel_table5
-set PercOfFSNChange = convert(100, decimal(16,2)) * vFsnCh / totCpt;
-
 
 Update cptRootLevel_table5
 set PercOfAnyChange = convert(100, decimal(16,2)) * vAnyCh / totCpt;
@@ -313,8 +229,7 @@ truncate table cptFirstLevel_table5;
 
 insert into cptFirstLevel_table5 
 select r.sourceId as id, r.term , cast(0 as decimal(5,2)) as PercOfAnyChange, cast(0 as decimal(5,2)) as PercOfStatedDefChange
-,cast(0 as decimal(5,2)) as PercOfInferredDefChange, cast(0 as decimal(5,2)) as PercOfPrimitive2SD,cast(0 as decimal(5,2)) as PercOfSD2Primitive
-,cast(0 as decimal(5,2)) as PercOfDescriptionChange,cast(0 as decimal(5,2)) as PercOfFSNChange 
+,cast(0 as decimal(5,2)) as PercOfInferredDefChange, cast(0 as decimal(5,2)) as PercOfPrimitive2SD,cast(0 as decimal(5,2)) as PercOfSD2Primitive 
 from s_statedrootdesc r ;
 
 -- insert into testtime values (2,'cptFirstLevel_table5' , CURRENT_TIMESTAMP);
@@ -348,22 +263,6 @@ set PercOfSD2Primitive =convert(100, decimal(16,2)) * (select SD2Primitive
 					from s_tclosure_stated t 
 					where t.ancestor=cptFirstLevel_table5.id);
 								
-
-Update cptFirstLevel_table5
-set PercOfDescriptionChange =convert(100, decimal(16,2)) * (select DescriptionChange 
-					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id) /(select count(*) + 1 
-					from s_tclosure_stated t 
-					where t.ancestor=cptFirstLevel_table5.id);
-
-Update cptFirstLevel_table5
-set PercOfFSNChange =convert(100, decimal(16,2)) * (select FSNChange 
-					from cptFirstLevel_table4 c
-					where c.id=cptFirstLevel_table5.id) /(select count(*) + 1 
-					from s_tclosure_stated t 
-					where t.ancestor=cptFirstLevel_table5.id);
-
-
 Update cptFirstLevel_table5
 set PercOfAnyChange =convert(100, decimal(16,2)) * (select AnyChange 
 					from cptFirstLevel_table4 c

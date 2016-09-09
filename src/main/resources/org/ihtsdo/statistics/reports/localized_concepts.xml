@@ -22,8 +22,10 @@
 	<outputDetailFile>
 	<file>LocalizedConceptDetails.csv</file>
 	<reportHeader>Hierarchy,Id,Term,Condition</reportHeader>
+	<sctIdIndex>1</sctIdIndex>
 	<storedProcedure>
 	<name>getLocalizedConceptDetails()</name>
 	</storedProcedure>
+	<createInterestConceptList>true</createInterestConceptList>
 	</outputDetailFile>
 </reportConfig>

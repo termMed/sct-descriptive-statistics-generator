@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
-public class OutputDetailFile {
+public class OutputDetailFile implements IReportDetail  {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 5L;
@@ -38,11 +38,19 @@ public class OutputDetailFile {
 	/** The stored procedure. */
 	private ArrayList<StoredProcedure> storedProcedure;
 	
-	/**
-	 * Gets the file.
-	 *
-	 * @return the file
+	private Integer sctIdIndex;
+	
+	private Boolean createInterestConceptList;
+	
+	private Integer excluyentListPriority;
+	
+	private Integer priorityListColumnIndex;
+
+	private ReportListeners reportListeners;
+	/* (non-Javadoc)
+	 * @see com.termmed.statistics.model.IReportDetail#getFile()
 	 */
+	@Override
 	public String getFile() {
 		return file;
 	}
@@ -90,5 +98,57 @@ public class OutputDetailFile {
 	 */
 	public void setStoredProcedure(ArrayList<StoredProcedure> storedProcedure) {
 		this.storedProcedure = storedProcedure;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.termmed.statistics.model.IReportDetail#getSctIdIndex()
+	 */
+	@Override
+	public Integer getSctIdIndex() {
+		return sctIdIndex;
+	}
+
+	public void setSctIdIndex(Integer sctIdIndex) {
+		this.sctIdIndex = sctIdIndex;
+	}
+
+	public Boolean getCreateInterestConceptList() {
+		return createInterestConceptList;
+	}
+
+	public void setCreateInterestConceptList(Boolean createInterestConceptList) {
+		this.createInterestConceptList = createInterestConceptList;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.termmed.statistics.model.IReportDetail#getExcluyentListPriority()
+	 */
+	@Override
+	public Integer getExcluyentListPriority() {
+		return excluyentListPriority;
+	}
+
+	public void setExcluyentListPriority(Integer excluyentListPriority) {
+		this.excluyentListPriority = excluyentListPriority;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.termmed.statistics.model.IReportDetail#getPriorityListColumnIndex()
+	 */
+	@Override
+	public Integer getPriorityListColumnIndex() {
+		return priorityListColumnIndex;
+	}
+
+	public void setPriorityListColumnIndex(Integer priorityListColumnIndex) {
+		this.priorityListColumnIndex = priorityListColumnIndex;
+	}
+
+	public ReportListeners getReportListeners() {
+		return reportListeners;
+	}
+
+	public void setReportListeners(ReportListeners reportListeners) {
+		this.reportListeners = reportListeners;
 	}
 }

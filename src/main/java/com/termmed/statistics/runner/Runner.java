@@ -33,6 +33,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.termmed.control.executor.PatternExecutor;
 import com.termmed.fileprovider.CurrentFile;
+import com.termmed.fileprovider.DependentFile;
 import com.termmed.fileprovider.PreviousFile;
 import com.termmed.statistics.Processor;
 import com.termmed.statistics.db.importer.ImportManager;
@@ -78,6 +79,8 @@ public class Runner {
 		if (args.length==0){
 			logger.logInfo("Error happened getting params. Params file doesn't exist");
 			System.exit(0);
+//		}else{
+//			args=new String[]{"config/complete_ca-edition11320161031.xml"};
 		}
 		File infoFolder = new File(I_Constants.PROCESS_INFO_FOLDER);
 		if (!infoFolder.exists()){
@@ -247,6 +250,18 @@ public class Runner {
 		
 		CurrentFile.init(sourceFolder, new File("release" + releaseDate),releaseDependencies, releaseDate);
 		PreviousFile.init(sourceFolder, new File("release" + previousReleaseDate),releaseDependencies, previousReleaseDate);
+		
+
+		String dependentRelease=xmlConfig.getString("dependentReleaseFullFolder");
+		if (dependentRelease!=null && !dependentRelease.trim().equals("")){
+			String dependentReleaseDate=xmlConfig.getString("dependentReleaseDate");
+			if (dependentReleaseDate==null ||dependentReleaseDate.trim().equals("")){
+				dependentReleaseDate=releaseDate;
+			}
+			DependentFile.init(new File(dependentRelease), new File("dependentrelease" + dependentReleaseDate), dependentReleaseDate);
+			
+		}
+
 	}
 
 	/**

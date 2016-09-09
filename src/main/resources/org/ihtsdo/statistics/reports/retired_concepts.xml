@@ -23,9 +23,12 @@
 	</outputFile>
 	<outputDetailFile>
 	<file>retiredConceptsDetailed.csv</file>
+	<excluyentListPriority>20</excluyentListPriority>
 	<reportHeader>Hierarchy,Id,Term,Reason</reportHeader>
+	<sctIdIndex>1</sctIdIndex>
 	<storedProcedure>
 	<name>getRetiredConceptDetails()</name>
 	</storedProcedure>
+	<createInterestConceptList>true</createInterestConceptList>
 	</outputDetailFile>
 </reportConfig>

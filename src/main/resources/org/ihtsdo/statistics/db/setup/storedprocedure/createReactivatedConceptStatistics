@@ -1,0 +1,108 @@
+drop procedure if exists createReactivatedConceptStatistics;
+
+CREATE PROCEDURE createReactivatedConceptStatistics()
+ MODIFIES SQL DATA
+ BEGIN ATOMIC
+ declare totCpt INTEGER;
+ declare reactCpts INTEGER;
+ 
+select count(*) into totCpt
+from s_concepts c;
+
+truncate table reactConcepts;
+
+insert into reactConcepts 
+select c.id ,c.active, c.definitionStatusId
+from s_concepts c
+where c.active=1 and exists (
+	select 0 
+	from s_concepts_pre pc
+	where pc.id=c.id and pc.active=0) ;
+
+
+
+select count(*) 
+into reactCpts
+from reactConcepts;
+
+
+truncate table cptRootLevel_table9;
+
+insert into cptRootLevel_table9 
+values ( 138875005, 'SNOMED CT Concept (SNOMED RT+CTV3)'  , cast(0 as integer) , cast(0 as decimal(5,2)) 
+,cast(0 as decimal(5,2)) , cast(0 as decimal(5,2)) ,cast(0 as decimal(5,2)) );
+
+
+Update cptRootLevel_table9 
+set reactConcepts=reactCpts ;
+
+
+
+Update cptRootLevel_table9 
+set PercentOfTotal=(convert(100, decimal(16,2)) * reactCpts/totCpt);
+
+
+Update cptRootLevel_table9 
+set PercentOfAllReactivated=100;
+
+if reactCpts>0 then
+
+Update cptRootLevel_table9 
+set PercentOfReactivatedSD=convert(100, decimal(16,2)) *(select count(*)
+					from reactConcepts c 
+					where c.definitionStatusId=900000000000073002)/reactCpts ;
+
+
+
+Update cptRootLevel_table9 
+set PercentOfReactivatedP=convert(100, decimal(16,2)) - PercentOfReactivatedSD ;
+
+end if;
+
+truncate table cptFirstLevel_table9;
+
+insert into cptFirstLevel_table9 
+select r.sourceId as id, r.term , cast(0 as integer) as reactConcepts, cast(0 as decimal(5,2)) as PercentOfHierarchy
+,cast(0 as decimal(5,2)) as PercentOfAllReactivated, cast(0 as decimal(5,2)) as PercentOfReactivatedSD,cast(0 as decimal(5,2)) as PercentOfReactivatedP
+from s_statedrootdesc r ;
+
+
+Update cptFirstLevel_table9 
+set reactConcepts=(select count(*) 
+				from reactConcepts c
+				inner join s_tclosure_stated t 
+				on t.descendant=c.id
+				where t.ancestor=cptFirstLevel_table9.id);
+
+
+
+if reactCpts>0 then
+
+Update cptFirstLevel_table9 
+set PercentOfHierarchy=(convert(100, decimal(16,2)) * reactConcepts/(select count(*) + 1 
+				from s_tclosure_stated t 
+				where t.ancestor=cptFirstLevel_table9.id));
+
+
+
+Update cptFirstLevel_table9 
+set PercentOfAllReactivated=(convert(100, decimal(16,2)) * reactConcepts/reactCpts);
+
+Update cptFirstLevel_table9 
+set PercentOfReactivatedSD=(convert(100, decimal(16,2)) *(select count(*) 
+					from reactConcepts c
+					inner join s_tclosure_stated t 
+					on t.descendant=c.id
+					where t.ancestor=cptFirstLevel_table9.id
+					and c.definitionStatusId=900000000000073002)/reactConcepts)
+					where reactConcepts>0;
+
+
+
+Update cptFirstLevel_table9 
+set PercentOfReactivatedP=convert(100, decimal(16,2)) - PercentOfReactivatedSD;
+					
+
+end if;
+
+END

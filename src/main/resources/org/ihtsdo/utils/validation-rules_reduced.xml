@@ -22,7 +22,7 @@
 				<regex>.*Description.*</regex>
 			</nameRule>
 			<headerRule>
-				<regex>effectiveTime\\tactive\\tconceptId\\ttypeId\\tterm$</regex>
+				<regex>id\\teffectiveTime\\tactive\\tconceptId\\ttypeId\\tterm$</regex>
 			</headerRule>
 		</file>
 		<file>
@@ -79,10 +79,10 @@
 				<regex>.*Language.*</regex>
 			</nameRule>
 			<headerRule>
-				<regex>id\\teffectiveTime\\tactive\\tmoduleId\\tref[sS]etId\\treferencedComponentId\\tacceptabilityId$</regex>
+				<regex>referencedComponentId$</regex>
 			</headerRule>
 			<contentRule>
-				<regex>[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}\\t\d{8}\\t\d{1}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}$</regex>
+				<regex>\d{3\,}$</regex>
 			</contentRule>
 		</file>
 		<file>
@@ -121,10 +121,10 @@
 				<regex>.*Association.*</regex>
 			</nameRule>
 			<headerRule>
-				<regex>id\\teffectiveTime\\tactive\\tmoduleId\\tref[sS]etId\\treferencedComponentId\\ttargetComponentId$</regex>
+				<regex>referencedComponentId\\ttargetComponentId$</regex>
 			</headerRule>
 			<contentRule>
-				<regex>[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}\\t\d{8}\\t\d{1}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}$</regex>
+				<regex>\d{3\,}\\t\d{3\,}$</regex>
 			</contentRule>
 		</file>
 		<file>

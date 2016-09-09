@@ -357,7 +357,7 @@ public class FileHelper {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws Exception the exception
 	 */
-	private static HashSet<String> getFilesFromFolder(String folder, String mustHave, String doesntMustHave, boolean isPrevious) throws IOException, Exception {
+	public static HashSet<String> getFilesFromFolder(String folder, String mustHave, String doesntMustHave, boolean isPrevious) throws IOException, Exception {
 		HashSet<String> result = new HashSet<String>();
 		File dir=new File(folder);
 		HashSet<String> files=new HashSet<String>();
@@ -366,7 +366,27 @@ public class FileHelper {
 		return result;
 
 	}
-	
+	public static HashSet<String> getFilesFromFolderWithPattern(String folder, String patternType, String mustHave, String doesntMustHave, boolean isPrevious, boolean isReduced) throws IOException, Exception {
+		HashSet<String> result = null;
+		File dir=new File(folder);
+		HashSet<String> files=new HashSet<String>();
+		findAllFiles(dir, files, mustHave, doesntMustHave, isPrevious);
+		for (String file:files){
+			String pattern=getFileTypeByHeader(new File(file), isReduced);
+			if (pattern==null){
+				log.info("null pattern for file:" + file);
+				continue;
+			}
+			if (pattern.equals(patternType)){
+				if (result == null){
+					result= new HashSet<String>();
+				}
+				result.add(file);
+			}
+		}
+		return result;
+
+	}
 	/**
 	 * Gets the txt file content.
 	 *

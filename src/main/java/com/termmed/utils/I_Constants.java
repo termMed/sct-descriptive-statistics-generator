@@ -67,4 +67,6 @@ public class I_Constants {
 	/** The Constant INACTIVATION_CONCEPT_REFSETID. */
 	public static final String INACTIVATION_CONCEPT_REFSETID = "900000000000489007";
 
+	public static final String EXCLUYENT_OUTPUT_FOLDER = "excluyent_lists";
+
 }

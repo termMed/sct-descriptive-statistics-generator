@@ -1,0 +1,44 @@
+drop procedure if exists getChangedConceptDesignationDetails;
+
+CREATE PROCEDURE getChangedConceptDesignationDetails()
+ MODIFIES SQL DATA DYNAMIC RESULT SETS 1
+ BEGIN ATOMIC
+ 
+ DECLARE result CURSOR WITH RETURN FOR SELECT * FROM cpttable7_details FOR READ ONLY;
+
+
+truncate table cpttable7_details;
+
+insert into cpttable7_details
+select distinct d2.term, r.id, r.term , 'Source description change referenced in language',r.did,51
+from pointToSourceChanges r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor;
+
+insert into cpttable7_details
+select distinct d2.term, r.id, r.term , 'Retired description',r.did,61
+from retiredDesc r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor;
+
+insert into cpttable7_details
+select distinct d2.term, r.id, r.term , 'New description in existing concept',r.did ,71
+from newDescExistConcept r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor;
+
+insert into cpttable7_details
+select distinct d2.term, r.id, r.term , 'Reactivated description',r.did ,81
+from reactivDesc r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor;
+
+insert into cpttable7_details
+select distinct d2.term, r.id, r.term , 'FSN change',r.did,41
+from fsnCh r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor;
+
+open result;
+
+END

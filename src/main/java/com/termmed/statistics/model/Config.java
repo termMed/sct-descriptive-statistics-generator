@@ -53,7 +53,12 @@ public class Config {
 	
 	InterestConceptLists interestConceptLists;
 	
+	String dependentReleaseFullFolder;
+	String dependentReleaseDate;
 	
+	String extensionLanguageSnapshotFile;
+	
+	Boolean createExcluyentDetailLists;
 	/**
 	 * Gets the release full folder.
 	 *
@@ -196,6 +201,46 @@ public class Config {
 	 */
 	public void setSp_params(SpParamList sp_params) {
 		this.sp_params = sp_params;
+	}
+
+	public InterestConceptLists getInterestConceptLists() {
+		return interestConceptLists;
+	}
+
+	public void setInterestConceptLists(InterestConceptLists interestConceptLists) {
+		this.interestConceptLists = interestConceptLists;
+	}
+
+	public String getExtensionLanguageSnapshotFile() {
+		return extensionLanguageSnapshotFile;
+	}
+
+	public void setExtensionLanguageSnapshotFile(String extensionLanguageSnapshotFile) {
+		this.extensionLanguageSnapshotFile = extensionLanguageSnapshotFile;
+	}
+
+	public Boolean getCreateExcluyentDetailLists() {
+		return createExcluyentDetailLists;
+	}
+
+	public void setCreateExcluyentDetailLists(Boolean createExcluyentDetailLists) {
+		this.createExcluyentDetailLists = createExcluyentDetailLists;
+	}
+
+	public String getDependentReleaseFullFolder() {
+		return dependentReleaseFullFolder;
+	}
+
+	public void setDependentReleaseFullFolder(String dependentReleaseFullFolder) {
+		this.dependentReleaseFullFolder = dependentReleaseFullFolder;
+	}
+
+	public String getDependentReleaseDate() {
+		return dependentReleaseDate;
+	}
+
+	public void setDependentReleaseDate(String dependentReleaseDate) {
+		this.dependentReleaseDate = dependentReleaseDate;
 	}
 	
 }

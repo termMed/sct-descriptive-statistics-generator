@@ -109,6 +109,7 @@ public class DbSetup {
 				continue;
 			}
 			String script=FileHelper.getTxtFileContent(file);
+			System.out.println("file:" + file.getName());
 			exec.executeStatement(script, null);
 		}
 	}

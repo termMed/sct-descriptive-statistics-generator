@@ -1,0 +1,275 @@
+drop procedure if exists createChangedConceptDesignationStatistics;
+
+CREATE PROCEDURE createChangedConceptDesignationStatistics(releaseDate INTEGER)
+ MODIFIES SQL DATA
+ BEGIN ATOMIC
+ 
+declare pTSource INTEGER;
+declare retDesc INTEGER;
+declare nDescEC INTEGER;
+declare reactDesc INTEGER;
+declare vFsnCh INTEGER;
+declare vAnyCh INTEGER;
+declare totCpt INTEGER;
+
+
+select count(*) into totCpt
+from s_concepts c;
+
+truncate table actConcepts;
+
+insert into actConcepts 
+select c.id ,c.definitionStatusId
+from s_concepts c
+where c.active=1
+and exists (
+	select 0 
+	from s_concepts_pre pc
+	where pc.id=c.id) ;
+
+truncate table cptRootLevel_table7;
+
+insert into cptRootLevel_table7 
+values ( 138875005, 'SNOMED CT Concept (SNOMED RT+CTV3)'  , cast(0 as integer) , cast(0 as integer) 
+,cast(0 as integer) , cast(0 as integer) ,cast(0 as integer) 
+,cast(0 as integer) );
+
+truncate table pointToSourceChanges;
+
+insert into pointToSourceChanges 
+	select distinct r.conceptId,r.term, r.id
+	from s_descriptions r
+	inner join s_ext_languages l on l.referencedComponentId=r.id
+	where r.effectiveTime=releaseDate;
+
+select count(*) into pTSource
+from pointToSourceChanges;
+
+Update cptRootLevel_table7
+set DESCINSOURCE=pTSource;
+
+truncate table retiredDesc;
+
+insert into retiredDesc 
+	select distinct r.conceptId,r.term, r.id
+	from s_descriptions r
+	where r.effectiveTime=releaseDate and r.active=0;
+				
+select count(*) into retDesc
+from retiredDesc;
+
+Update cptRootLevel_table7
+set RETIREDDESC=retDesc;
+
+
+truncate table newDesc ;
+truncate table newDescExistConcept ;
+
+insert into newDesc
+select d1.conceptId,d1.term, d1.id from s_descriptions d1
+where d1.active=1 and
+not exists(select 0 from s_descriptions_pre d2 
+where d2.id=d1.id);
+
+insert into newDescExistConcept
+select nd.conceptId ,nd.term, nd.did from 
+newDesc nd inner join actConcepts a
+on a.id=nd.conceptId;
+
+truncate table newDesc;
+
+select count(*) into nDescEC
+from newDescExistConcept;
+
+Update cptRootLevel_table7
+set NEWDESC =nDescEC;
+
+truncate table reactivDesc ;
+
+insert into reactivDesc
+select d1.conceptId,d1.term, d1.id from s_descriptions d1
+where d1.active=1 and
+exists(select 0 from s_descriptions_pre d2 
+where d2.id=d1.id and d2.active=0);
+
+select count(*) into reactDesc
+from reactivDesc;
+
+Update cptRootLevel_table7
+set REACTIVATEDDESC = reactDesc;
+
+truncate table fsnCh ;
+
+insert into fsnCh 				
+select distinct c.id,d.term + ' -Prev.FSN: ' + d2.term, d.id
+	from actConcepts c
+	inner join s_descriptions d
+	on d.conceptId=c.id
+	and d.effectivetime=releaseDate and d.typeId=900000000000003001 and d.active=1
+	inner join s_descriptions d2
+	on d2.conceptId=c.id
+	and d2.effectivetime=releaseDate and d2.typeId=900000000000003001 and d2.active=0
+	where d.conceptId=c.id and d.effectivetime=releaseDate and d.typeId=900000000000003001 and d.active=1
+	and d2.conceptId=c.id and d2.effectivetime=releaseDate and d2.typeId=900000000000003001 and d2.active=0;
+
+
+truncate table actConcepts;
+
+select count(*) into vFsnCh
+from fsnCh;
+
+Update cptRootLevel_table7
+set FSNChange = vFsnCh;
+
+
+truncate table anyCh ;
+
+insert into anyCh 
+	select id from pointToSourceChanges
+	union
+	select id from retiredDesc
+	union
+	select id from newDescExistConcept
+	union
+	select id from reactivDesc
+	union
+	select id from fsnCh;
+
+select count(*) into vAnyCh
+from anyCh ;
+
+Update cptRootLevel_table7
+set AnyChange = vAnyCh;
+
+
+truncate table cptFirstLevel_table7;
+
+insert into cptFirstLevel_table7
+select r.sourceId as id, r.term , cast(0 as integer) , cast(0 as integer) 
+,cast(0 as integer), cast(0 as integer),cast(0 as integer) 
+,cast(0 as integer)  
+from s_statedrootdesc r;
+
+		
+Update cptFirstLevel_table7
+set DESCINSOURCE=(select count(*) 
+					from pointToSourceChanges c
+					inner join s_tclosure_stated t 
+					on t.descendant=c.id
+					where t.ancestor=cptFirstLevel_table7.id);
+
+
+Update cptFirstLevel_table7
+set RETIREDDESC =(select count(*) 
+					from retiredDesc c
+					inner join s_tclosure_stated t 
+					on t.descendant=c.id
+					where t.ancestor=cptFirstLevel_table7.id);
+
+Update cptFirstLevel_table7
+set NEWDESC =(select count(*) 
+					from newDescExistConcept c
+					inner join s_tclosure_stated t 
+					on t.descendant=c.id
+					where t.ancestor=cptFirstLevel_table7.id);
+
+Update cptFirstLevel_table7
+set REACTIVATEDDESC =(select count(*) 
+					from reactivDesc c
+					inner join s_tclosure_stated t 
+					on t.descendant=c.id
+					where t.ancestor=cptFirstLevel_table7.id);
+
+Update cptFirstLevel_table7
+set FSNChange =(select count(*) 
+					from fsnCh c
+					inner join s_tclosure_stated t 
+					on t.descendant=c.id
+					where t.ancestor=cptFirstLevel_table7.id);
+
+Update cptFirstLevel_table7
+set AnyChange =(select count(*) 
+					from anyCh c
+					inner join s_tclosure_stated t 
+					on t.descendant=c.id
+					where t.ancestor=cptFirstLevel_table7.id);
+
+truncate table anyCh;
+truncate table cptRootLevel_table8;
+
+insert into cptRootLevel_table8 
+values ( 138875005, 'SNOMED CT Concept (SNOMED RT+CTV3)' , cast(0 as decimal(5,2)) , cast(0 as decimal(5,2)) 
+,cast(0 as decimal(5,2)) , cast(0 as decimal(5,2)) ,cast(0 as decimal(5,2)) 
+,cast(0 as decimal(5,2)) );
+
+Update cptRootLevel_table8
+set PERCOFDESCINSOURCE=convert(100, decimal(16,2)) * pTSource / totCpt;
+
+Update cptRootLevel_table8
+set PERCOFRETIREDDESC=convert(100, decimal(16,2)) * retDesc / totCpt;
+
+Update cptRootLevel_table8
+set PERCOFNEWDESC = convert(100, decimal(16,2)) * nDescEC / totCpt;
+
+Update cptRootLevel_table8
+set PERCOFREACTIVATEDDESC = convert(100, decimal(16,2)) * reactDesc / totCpt;
+
+Update cptRootLevel_table8
+set PercOfFSNChange = convert(100, decimal(16,2)) * vFsnCh / totCpt;
+
+Update cptRootLevel_table8
+set PercOfAnyChange = convert(100, decimal(16,2)) * vAnyCh / totCpt;
+
+
+truncate table cptFirstLevel_table8;
+
+insert into cptFirstLevel_table8 
+select r.sourceId as id, r.term , cast(0 as decimal(5,2)) , cast(0 as decimal(5,2)) 
+,cast(0 as decimal(5,2)), cast(0 as decimal(5,2)) ,cast(0 as decimal(5,2)) 
+,cast(0 as decimal(5,2)) 
+from s_statedrootdesc r ;
+
+Update cptFirstLevel_table8
+set PERCOFDESCINSOURCE=convert(100, decimal(16,2)) * (select DESCINSOURCE 
+					from cptFirstLevel_table7 c
+					where c.id=cptFirstLevel_table8.id) /(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table8.id);
+
+Update cptFirstLevel_table8
+set PERCOFRETIREDDESC =convert(100, decimal(16,2)) * (select RETIREDDESC 
+					from cptFirstLevel_table7 c
+					where c.id=cptFirstLevel_table8.id) /(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table8.id);
+
+Update cptFirstLevel_table8
+set PERCOFNEWDESC =convert(100, decimal(16,2)) * (select NEWDESC 
+					from cptFirstLevel_table7 c
+					where c.id=cptFirstLevel_table8.id) /(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table8.id);
+
+Update cptFirstLevel_table8
+set PERCOFREACTIVATEDDESC =convert(100, decimal(16,2)) * (select REACTIVATEDDESC 
+					from cptFirstLevel_table7 c
+					where c.id=cptFirstLevel_table8.id) /(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table8.id);
+								
+Update cptFirstLevel_table8
+set PercOfFSNChange =convert(100, decimal(16,2)) * (select FSNChange 
+					from cptFirstLevel_table7 c
+					where c.id=cptFirstLevel_table8.id) /(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table8.id);
+
+
+Update cptFirstLevel_table8
+set PercOfAnyChange =convert(100, decimal(16,2)) * (select AnyChange 
+					from cptFirstLevel_table7 c
+					where c.id=cptFirstLevel_table8.id)/(select count(*) + 1 
+					from s_tclosure_stated t 
+					where t.ancestor=cptFirstLevel_table8.id);
+
+END
