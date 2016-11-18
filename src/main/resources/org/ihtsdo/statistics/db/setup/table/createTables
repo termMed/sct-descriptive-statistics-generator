@@ -58,6 +58,14 @@ create text table s_descriptions_pre (
 create text table s_ext_languages (
   referencedComponentId bigint NOT NULL );
   
+ drop table if exists s_languages;
+create text table s_languages (
+  referencedComponentId bigint NOT NULL );
+  
+ drop table if exists s_languages_pre;
+create text table s_languages_pre (
+  referencedComponentId bigint NOT NULL );
+  
 drop table if exists  s_statedrels;
 CREATE text TABLE s_statedrels (
 	sourceId bigint NOT NULL,
@@ -212,6 +220,11 @@ defStatus tinyint );
 
 drop table if exists  FSNCH;
 create table FSNCH (id bigint ,
+ term varchar(522),
+did bigint );
+
+drop table if exists  prefCh;
+create table prefCh (id bigint ,
  term varchar(522),
 did bigint );
   

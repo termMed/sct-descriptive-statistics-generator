@@ -8,9 +8,11 @@
 	<inputFile>DESCRIPTIONS_PREVIOUS</inputFile>
 	<inputFile>TCLOSURESTATED</inputFile>
 	<inputFile>EXT_LANGUAGE</inputFile>
+	<inputFile>LANGUAGE</inputFile>
+	<inputFile>LANGUAGE_PREVIOUS</inputFile>
 	<storedProcedure>
 		<name>createChangedConceptDesignationStatistics(?)</name>
-		<param><name>releaseDate</name><order>1</order><sqlType>INT</sqlType></param>
+		<param><name>previousReleaseDate</name><order>1</order><sqlType>INT</sqlType></param>
 	</storedProcedure>
 	<outputFile>
 	<file>STATISTICS_ON_EXISTING_CONCEPTS_DESIGNATION_count.csv</file>
@@ -36,7 +38,7 @@
 	<file>changedConceptDesignationDetails.csv</file>
 	<reportHeader>Hierarchy,Id,Term,ChangeType,DescriptionId,Priority</reportHeader>
 	<sctIdIndex>1</sctIdIndex>
-	<excluyentListPriority>40</excluyentListPriority>
+	<excluyentListPriority>45</excluyentListPriority>
 	<priorityListColumnIndex>5</priorityListColumnIndex>
 	<storedProcedure>
 	<name>getChangedConceptDesignationDetails()</name>
@@ -71,6 +73,36 @@
 		<filter>
 		<fieldIndex>3</fieldIndex>
 		<fieldValue>FSN change</fieldValue>
+		</filter>
+		</reportListenerDescriptor>
+		<reportListenerDescriptor>
+		<executionClass>com.termmed.statistics.reportlisteners.ChangedDescriptionsInLangRefset</executionClass>
+		<file>DescriptionsInConceptPreferredChanges.csv</file>
+		<excluyentListPriority>42</excluyentListPriority>
+		<sctIdIndex>1</sctIdIndex>
+		<filter>
+		<fieldIndex>3</fieldIndex>
+		<fieldValue>Preferred change</fieldValue>
+		</filter>
+		</reportListenerDescriptor>
+		<reportListenerDescriptor>
+		<executionClass>com.termmed.statistics.reportlisteners.ChangedDescriptionsInSimpleRefsetConcepts</executionClass>
+		<file>PreferredChangeInSimpleRefsetConcepts.csv</file>
+		<excluyentListPriority>41</excluyentListPriority>
+		<sctIdIndex>1</sctIdIndex>
+		<filter>
+		<fieldIndex>3</fieldIndex>
+		<fieldValue>Preferred change</fieldValue>
+		</filter>
+		</reportListenerDescriptor>
+		<reportListenerDescriptor>
+		<executionClass>com.termmed.statistics.reportlisteners.ChangedDescriptionsInStatedTargets</executionClass>
+		<file>PreferredChangeInStatedTargets.csv</file>
+		<excluyentListPriority>43</excluyentListPriority>
+		<sctIdIndex>1</sctIdIndex>
+		<filter>
+		<fieldIndex>3</fieldIndex>
+		<fieldValue>Preferred change</fieldValue>
 		</filter>
 		</reportListenerDescriptor>
 	</reportListeners>

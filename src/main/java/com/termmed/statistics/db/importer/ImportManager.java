@@ -108,6 +108,8 @@ public class ImportManager {
 	
 	/** The t closure stated_pre. */
 	boolean tClosureStated_pre;
+
+	private String refsetId;
 	
 	/** The params. */
 	public static HashMap<String,String> params;
@@ -163,10 +165,13 @@ public class ImportManager {
 		SIMPLEMAPS("s_simplemaps",null,null,null,null,false,null,null,null),
 		
 		/** The language. */
-		LANGUAGE("s_languages",null,null,null,null,false,null,null,null),
+		LANGUAGE("s_languages","rf2-language",null,null,"_ext",false,"referencedComponentId",new Integer[]{2,6},new String[]{"1","900000000000548007"}),
 		
 		/** The language. */
-		EXT_LANGUAGE("s_ext_languages","rf2-language",null,null,null,false,"referencedComponentId",new Integer[]{2},new String[]{"1"}),
+		LANGUAGE_PREVIOUS("s_languages_pre","rf2-language",null,null,"_ext",true,"referencedComponentId",new Integer[]{2,6},new String[]{"1","900000000000548007"}),
+		
+		/** The language. */
+		EXT_LANGUAGE("s_ext_languages","rf2-language",null,null,"s_l",false,"referencedComponentId",new Integer[]{2},new String[]{"1"}),
 		
 		/** The tclosurestated. */
 		TCLOSURESTATED("s_tclosure_stated","transitive-closure",null,"stated","pre",false,null,null,null),
@@ -439,6 +444,10 @@ public class ImportManager {
 	/** The release dependencies. */
 	private boolean releaseDependencies;
 
+	private boolean lang_pre;
+
+	private boolean lang;
+
 	/** The logger. */
 	private static Logger logger;
 	
@@ -498,7 +507,8 @@ public class ImportManager {
 			throw e;
 		}
 
-		releaseDependencies=CurrentFile.get().getReleaseDependenciesFullFolders()!=null;
+		refsetId=xmlConfig.getString("refsetId");
+		releaseDependencies=CurrentFile.get().getReleaseDependenciesFullFolders()!=null && CurrentFile.get().getReleaseDependenciesFullFolders().size()>0;
 		this.releaseDate = xmlConfig.getString("releaseDate");
 		this.previousReleaseDate = xmlConfig.getString("previousReleaseDate");
 
@@ -603,6 +613,30 @@ public class ImportManager {
 							}
 							statedRels_pre=true;
 							break;
+						case LANGUAGE_PREVIOUS :
+							if (refsetId!=null && !refsetId.equals("")){
+								Integer[] newfields=new Integer[]{2,4,6};
+								String[] newValues=new String[]{"1",refsetId,"900000000000548007"};
+								table.setFieldFilter(newfields);
+								table.setFieldFilterValue(newValues);
+							}
+							if (lang_pre){
+								continue;
+							}
+							lang_pre=true;
+							break;
+						case LANGUAGE :
+							if (refsetId!=null && !refsetId.equals("")){
+								Integer[] newfields=new Integer[]{2,4,6};
+								String[] newValues=new String[]{"1",refsetId,"900000000000548007"};
+								table.setFieldFilter(newfields);
+								table.setFieldFilterValue(newValues);
+							}
+							if (lang){
+								continue;
+							}
+							lang=true;
+							break;
 						case TCLOSURESTATED_PREVIOUS :
 							if (tClosureStated_pre){
 								continue;
@@ -636,6 +670,9 @@ public class ImportManager {
 			for (HierarchicalConfiguration sub : fields) {
 				String paramName=sub.getString("name");
 				String value=sub.getString("value");
+				if (value.equals("$param")){
+					value=xmlConfig.getString(paramName);
+				}
 				params.put(paramName, value);
 			}
 		}
@@ -825,7 +862,9 @@ public class ImportManager {
 		if (table.getPatternTag().equals("rf2-statedrootdesc")){
 			logger.info("Getting Top Level");
 			if (!releaseDependencies){
+				logger.info("Releases dependencies folders are null");
 				txt=CurrentFile.get().getStatedRelationshipFile();
+				
 			}else{
 				txt = CurrentFile.get().getCompleteStatedRelationshipFull();
 			}
@@ -846,6 +885,7 @@ public class ImportManager {
 			}
 		}
 		if (table.getFieldFilter()!=null){
+		
 			File fileTxt=new File(txt);
 			File txtTmpFile=new File(fileTxt.getParentFile(),"tmp_"+ fileTxt.getName());
 			ConversionSnapshotDelta.snapshotFile(fileTxt, sortFolderTmp, sortedFolderTmp, txtTmpFile, snapshotDate, new int[]{0,1}, 0, 1, null, null, null);

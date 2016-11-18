@@ -34,8 +34,14 @@ inner join s_tclosure_stated t on t.descendant=r.id
 inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor;
 
 insert into cpttable7_details
-select distinct d2.term, r.id, r.term , 'FSN change',r.did,41
+select distinct d2.term, r.id, r.term , 'FSN change',r.did,46
 from fsnCh r
+inner join s_tclosure_stated t on t.descendant=r.id 
+inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor;
+
+insert into cpttable7_details
+select distinct d2.term, r.id, r.term , 'Preferred change',r.did,47
+from prefCh r
 inner join s_tclosure_stated t on t.descendant=r.id 
 inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor;
 

@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-	<releaseFullFolder>/Users/ar/Downloads/SnomedCT_RF2Release_INT_20160131/Full</releaseFullFolder>
-	<releaseDate>20160131</releaseDate>
-	<previousReleaseDate>20150731</previousReleaseDate>
+	<releaseFullFolder>/Users/ar/Downloads/SnomedCT_DrugsProductHierarchyModelingTechPreview_INT_20170131/Full</releaseFullFolder>
+	<releaseDate>20170131</releaseDate>
+	<previousReleaseDate>20160731</previousReleaseDate>
 	<reports>
 		<reportDescriptor><filename>general.xml</filename><execute>true</execute></reportDescriptor>
 		<reportDescriptor><filename>new_concepts.xml</filename><execute>true</execute></reportDescriptor>
 		<reportDescriptor><filename>retired_concepts.xml</filename><execute>true</execute></reportDescriptor>
-		<reportDescriptor><filename>changed_concepts.xml</filename><execute>true</execute></reportDescriptor>
+		<reportDescriptor><filename>reactivated_concepts.xml</filename><execute>true</execute></reportDescriptor>
+		<reportDescriptor><filename>changed_concept_designation.xml</filename><execute>true</execute></reportDescriptor>
+		<reportDescriptor><filename>changed_concept_definition.xml</filename><execute>true</execute></reportDescriptor>
 		<reportDescriptor><filename>localized_concepts.xml</filename><execute>false</execute></reportDescriptor>
 	</reports>
 	<sp_params>
-		<param><name>releaseDate</name><value>20160131</value></param>
+		<param><name>releaseDate</name><value>$param</value></param>
+		<param><name>previousReleaseDate</name><value>$param</value></param>
 	</sp_params>
+	<releaseDependencies/>
 	<createDetailReports>true</createDetailReports>
 	<patternExecutions>
-		<runControlPatterns>true</runControlPatterns>
+		<runControlPatterns>false</runControlPatterns>
 		<exclusions>
 		</exclusions>
 	</patternExecutions>
@@ -26,4 +30,7 @@
 	<listTitle></listTitle>
 	</conceptListDescriptor>
 	</interestConceptLists>
+	<dependentReleaseFullFolder></dependentReleaseFullFolder>
+	<dependentReleaseDate></dependentReleaseDate>
+	<createExcluyentDetailLists>true</createExcluyentDetailLists>
 </config>

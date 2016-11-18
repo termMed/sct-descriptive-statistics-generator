@@ -72,6 +72,8 @@ public class Processor {
 
 	private TreeMap<Integer, IReportDetail> mapExcluyentListFile;
 
+	private boolean enableListeners;
+
 	/**
 	 * Instantiates a new processor.
 	 *
@@ -101,6 +103,11 @@ public class Processor {
 			throw e;
 		}
 		createDetails=xmlConfig.getString("createDetailReports");
+		String dependentRelease=xmlConfig.getString("dependentReleaseFullFolder");
+		enableListeners=true;
+		if (dependentRelease==null || dependentRelease.trim().equals("") ){
+			enableListeners=false;
+		}
 		List<HierarchicalConfiguration> listDescriptors = xmlConfig
 				.configurationsAt("interestConceptLists.conceptListDescriptor");
 
@@ -355,10 +362,12 @@ public class Processor {
 		if (ixSctIdInReport==null){
 			ixSctIdInReport=1;
 		}
-		ReportListeners reportListenersDescriptors = detail.getReportListeners();
 		List<IReportListener>dependentReports=null;
-		if (reportListenersDescriptors!=null){
-			dependentReports=initListeners(reportListenersDescriptors,detail);
+		if (enableListeners){
+			ReportListeners reportListenersDescriptors = detail.getReportListeners();
+			if (reportListenersDescriptors!=null){
+				dependentReports=initListeners(reportListenersDescriptors,detail);
+			}
 		}
 		for (StoredProcedure sProc:detail.getStoredProcedure()){
 			executor.executeStoredProcedure(sProc, ImportManager.params, null);
@@ -371,9 +380,16 @@ public class Processor {
 				while(rs.next()){
 					line="";
 					for (int i=0;i<meta.getColumnCount();i++){
-						fieldValue=rs.getObject(i+1).toString().replaceAll(",","&#44;").trim();
-						if (ixSctIdInReport.intValue()==i){
-							sctId=fieldValue;
+						if (rs.getObject(i+1)!=null){
+							fieldValue=rs.getObject(i+1).toString().replaceAll(",","&#44;").trim();
+							if (ixSctIdInReport.intValue()==i){
+								sctId=fieldValue;
+							}
+						}else{
+							fieldValue="";
+							if (ixSctIdInReport.intValue()==i){
+								sctId="0";
+							}
 						}
 						line+=fieldValue;
 						//						bw.append(fieldValue);
@@ -430,7 +446,7 @@ public class Processor {
 				report.setReportFile(new File(I_Constants.STATS_OUTPUT_FOLDER + "/" + reportListenerDescriptor.getFile() + (reportListenerDescriptor.getFile().toLowerCase().endsWith(".csv")?"":".csv")));
 				report.setReportFilter(reportListenerDescriptor.getFilter());
 				retReports.add(report);
-				
+
 				Integer priority= reportListenerDescriptor.getExcluyentListPriority();
 				if (priority!=null){
 					mapExcluyentListFile.put(priority,reportListenerDescriptor);
@@ -536,7 +552,11 @@ public class Processor {
 					ResultSetMetaData meta= rs.getMetaData();
 					while(rs.next()){
 						for (int i=0;i<meta.getColumnCount();i++){
-							bw.append(rs.getObject(i+1).toString());
+							if (rs.getObject(i+1)!=null){
+								bw.append(rs.getObject(i+1).toString());
+							}else{
+								bw.append("");
+							}
 							if (i+1<meta.getColumnCount()){
 								bw.append(",");
 							}else{

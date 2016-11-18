@@ -69,17 +69,19 @@ public class DependentFileProvider extends FileProvider {
 				Long ref=Long.parseLong(spl[5]);
 				Long cid=descriptions.get(ref);
 				if (cid==null){
+
 					referencedDescriptions.add(ref);
 
 				}else{
-					String fsn=concepts.get(cid);
-					if (fsn==null){
-						referencedConcepts.add(cid);
-					}
+
+					referencedConcepts.add(cid);
+
 				}
 			}
 			br.close();
 		}
+		System.out.println("Concept referenced:" + referencedConcepts.size());
+		System.out.println("Desc referenced:" + referencedDescriptions.size());
 		file=getSnapshotStatedRelationshipFile();
 		if (file!=null){
 			br=FileHelper.getReader(file);
@@ -88,17 +90,15 @@ public class DependentFileProvider extends FileProvider {
 				spl=line.split("\t",-1);
 				if(spl[2].equals("1")){
 					Long ref=Long.parseLong(spl[5]);
-					if (concepts.get(ref)==null){
 
-						String fsn=concepts.get(Long.parseLong(spl[4]));
+					String fsn=concepts.get(Long.parseLong(spl[4]));
 
-						List<String> list=referencedStatedTargets.get(ref);
-						if (list==null){
-							list=new ArrayList<String>();
-						}
-						list.add(spl[4] + "|" + fsn);
-						referencedStatedTargets.put(ref,list);
+					List<String> list=referencedStatedTargets.get(ref);
+					if (list==null){
+						list=new ArrayList<String>();
 					}
+					list.add(spl[4] + "|" + fsn);
+					referencedStatedTargets.put(ref,list);
 				}
 			}
 			br.close();

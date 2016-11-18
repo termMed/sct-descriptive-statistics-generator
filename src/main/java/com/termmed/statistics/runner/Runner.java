@@ -80,7 +80,7 @@ public class Runner {
 			logger.logInfo("Error happened getting params. Params file doesn't exist");
 			System.exit(0);
 //		}else{
-//			args=new String[]{"config/complete_ca-edition11320161031.xml"};
+//			args=new String[]{"config/complete_nl-edition11320160930.xml"};
 		}
 		File infoFolder = new File(I_Constants.PROCESS_INFO_FOLDER);
 		if (!infoFolder.exists()){
@@ -99,7 +99,8 @@ public class Runner {
 			boolean clean=false;
 			if (args.length>=2){
 				for (int i=1;i<args.length;i++){
-					if (args[i].toLowerCase().equals("-clean")){
+					logger.logInfo("Arg " + i + ": " + args[i]);
+					if (args[i].toLowerCase().equals("clean")){
 						clean=true;
 					}
 				}
@@ -118,8 +119,12 @@ public class Runner {
 //			changedPreviousDate=false;
 		/********************************/
 			if (clean || changedDate || changedPreviousDate){
+				logger.logInfo("Removing old data");
 				removeDBFolder();
 				removeRepoFolder();
+				removeReducedFolder();
+				changedDate=true;
+				changedPreviousDate=true;
 			}
 			
 			Class.forName("org.hsqldb.jdbcDriver");			
@@ -286,6 +291,16 @@ public class Runner {
 		}
 	}
 
+	private static void removeReducedFolder(){
+		File reducedSnapshotFolder = new File("reducedSnapshotFolder");
+		if (!reducedSnapshotFolder.exists()){
+			FileHelper.emptyFolder(reducedSnapshotFolder);
+		}
+		File previousReducedSnapshotFolder = new File("previousReducedSnapshotFolder");
+		if (!previousReducedSnapshotFolder.exists()){
+			FileHelper.emptyFolder(previousReducedSnapshotFolder);
+		}
+	}
 	/**
 	 * Check dates.
 	 *

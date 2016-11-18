@@ -1,6 +1,6 @@
 drop procedure if exists createChangedConceptDesignationStatistics;
 
-CREATE PROCEDURE createChangedConceptDesignationStatistics(releaseDate INTEGER)
+CREATE PROCEDURE createChangedConceptDesignationStatistics( prevReleaseDate INTEGER)
  MODIFIES SQL DATA
  BEGIN ATOMIC
  
@@ -40,7 +40,7 @@ insert into pointToSourceChanges
 	select distinct r.conceptId,r.term, r.id
 	from s_descriptions r
 	inner join s_ext_languages l on l.referencedComponentId=r.id
-	where r.effectiveTime=releaseDate;
+	where r.effectiveTime>prevReleaseDate;
 
 select count(*) into pTSource
 from pointToSourceChanges;
@@ -53,7 +53,7 @@ truncate table retiredDesc;
 insert into retiredDesc 
 	select distinct r.conceptId,r.term, r.id
 	from s_descriptions r
-	where r.effectiveTime=releaseDate and r.active=0;
+	where r.effectiveTime>prevReleaseDate and r.active=0;
 				
 select count(*) into retDesc
 from retiredDesc;
@@ -101,17 +101,35 @@ set REACTIVATEDDESC = reactDesc;
 truncate table fsnCh ;
 
 insert into fsnCh 				
-select distinct c.id,d.term + ' -Prev.FSN: ' + d2.term, d.id
+select distinct c.id,d.term + ' -Prev.FSN: ' + d2.term, d2.id
 	from actConcepts c
 	inner join s_descriptions d
 	on d.conceptId=c.id
-	and d.effectivetime=releaseDate and d.typeId=900000000000003001 and d.active=1
-	inner join s_descriptions d2
+	and d.typeId=900000000000003001 and d.active=1
+	inner join s_descriptions_pre d2
 	on d2.conceptId=c.id
-	and d2.effectivetime=releaseDate and d2.typeId=900000000000003001 and d2.active=0
-	where d.conceptId=c.id and d.effectivetime=releaseDate and d.typeId=900000000000003001 and d.active=1
-	and d2.conceptId=c.id and d2.effectivetime=releaseDate and d2.typeId=900000000000003001 and d2.active=0;
+	and d2.typeId=900000000000003001 and d2.active=1
+	where d.conceptId=c.id and d.typeId=900000000000003001 and d.active=1
+	and d2.conceptId=c.id and d2.typeId=900000000000003001 and d2.active=1
+	and d2.id!=d.id;
 
+
+truncate table prefCh ;
+
+insert into prefCh 				
+select distinct c.id,d.term + ' -Prev.pref: ' + d2.term, d2.id
+	from actConcepts c
+	inner join s_descriptions d
+	on d.conceptId=c.id
+	and d.typeId=900000000000013009 and d.active=1
+	inner join s_languages l on l.referencedComponentId=d.id
+	inner join s_descriptions_pre d2
+	on d2.conceptId=c.id 
+	and d2.typeId=900000000000013009 and d2.active=1 
+	inner join s_languages_pre l2 on l2.referencedComponentId=d2.id
+	where d.conceptId=c.id and d.typeId=900000000000013009 and d.active=1
+	and d2.conceptId=c.id and d2.typeId=900000000000013009 and d2.active=1
+	and d2.id!=d.id;
 
 truncate table actConcepts;
 

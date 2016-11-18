@@ -21,7 +21,7 @@
 	</outputFile>
 	<outputDetailFile>
 	<file>reactivatedConceptsDetailed.csv</file>
-	<excluyentListPriority>30</excluyentListPriority>
+	<excluyentListPriority>35</excluyentListPriority>
 	<reportHeader>Hierarchy,Id,Term,DefinitionStatus</reportHeader>
 	<sctIdIndex>1</sctIdIndex>
 	<storedProcedure>
@@ -32,7 +32,7 @@
 		<reportListenerDescriptor>
 		<executionClass>com.termmed.statistics.reportlisteners.ReactConceptDescriptionsInLangRefset</executionClass>
 		<file>ReactConceptDescriptionsInLangRefset.csv</file>
-		<excluyentListPriority>35</excluyentListPriority>
+		<excluyentListPriority>30</excluyentListPriority>
 		<sctIdIndex>1</sctIdIndex>
 		</reportListenerDescriptor>
 	</reportListeners>

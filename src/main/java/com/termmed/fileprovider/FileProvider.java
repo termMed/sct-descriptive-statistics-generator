@@ -184,6 +184,7 @@ public class FileProvider {
 
 	private HashSet<String> snapshotRefsetSimpleFiles;
 
+	private static final String FALLBACK_COMPUTED = "WithPrecomputedDefaults";
 
 	/**
 	 * Gets the concept file.
@@ -278,7 +279,7 @@ public class FileProvider {
 	 */
 	public String getLanguageFile() throws IOException, Exception {
 		if (languageFile==null){
-			languageFile=FileHelper.getFile(fullFolder, "rf2-language", null, null, null, false, false);
+			languageFile=FileHelper.getFile(fullFolder, "rf2-language", null, null, FALLBACK_COMPUTED, false, false);
 		}
 		return languageFile;
 	}
@@ -467,7 +468,7 @@ public class FileProvider {
 	 */
 	public String getSnapshotLanguageFile() throws IOException, Exception {
 		if (snapshotLanguageFile==null){
-			snapshotLanguageFile=FileHelper.getFile(snapshotFolder, "rf2-language", null, null, null, false, false);
+			snapshotLanguageFile=FileHelper.getFile(snapshotFolder, "rf2-language", null, null, FALLBACK_COMPUTED, false, false);
 			if (snapshotLanguageFile==null){
 				getLanguageFile();
 				if (languageFile!=null){
