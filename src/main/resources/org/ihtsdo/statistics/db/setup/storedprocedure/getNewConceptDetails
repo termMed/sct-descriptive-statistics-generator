@@ -14,8 +14,8 @@ select distinct d2.term, r.id, d.term ,case r.definitionStatusId
 when 900000000000074008 then 'Primitive'
 else 'Sufficiently defined' end case
 from newConcepts r
-inner join s_tclosure_stated t on t.descendant=r.id 
-inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor
+inner join s_tclosure_inferred t on t.descendant=r.id
+inner join s_inferredrootdesc d2 on d2.sourceId=t.ancestor
 left join s_descriptions d on d.conceptId=r.id
 and d.active=1
 and d.typeId=900000000000003001;

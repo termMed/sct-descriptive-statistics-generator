@@ -20,8 +20,8 @@ when 900000000000487009 then 'Moved else where'
 when 900000000000484002 then 'Ambiguous'
 else 'Reason not stated' end case
 from retConcepts r
-inner join s_tclosure_stated_pre t on t.descendant=r.id 
-inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor
+inner join s_tclosure_inferred_pre t on t.descendant=r.id
+inner join s_inferredrootdesc d2 on d2.sourceId=t.ancestor
 left join s_attributevalues a
 on a.referencedComponentId=r.id and a.refsetId=900000000000489007
 left join s_descriptions d on d.conceptId=r.id

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <reportConfig>
 	<name>Changed Concept Designation</name>
-	<inputFile>STATEDROOTDESC</inputFile>
+	<inputFile>INFERREDROOTDESC</inputFile>
 	<inputFile>CONCEPTS</inputFile>
 	<inputFile>CONCEPTS_PREVIOUS</inputFile>
 	<inputFile>DESCRIPTIONS</inputFile>
 	<inputFile>DESCRIPTIONS_PREVIOUS</inputFile>
-	<inputFile>TCLOSURESTATED</inputFile>
+	<inputFile>TCLOSUREINFERRED</inputFile>
 	<inputFile>EXT_LANGUAGE</inputFile>
 	<inputFile>LANGUAGE</inputFile>
 	<inputFile>LANGUAGE_PREVIOUS</inputFile>

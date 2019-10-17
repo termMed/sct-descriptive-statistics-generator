@@ -37,10 +37,12 @@ Update cptRootLevel_table9
 set reactConcepts=reactCpts ;
 
 
+if totCpt>0 then
 
 Update cptRootLevel_table9 
 set PercentOfTotal=(convert(100, decimal(16,2)) * reactCpts/totCpt);
 
+end if;
 
 Update cptRootLevel_table9 
 set PercentOfAllReactivated=100;
@@ -64,13 +66,13 @@ truncate table cptFirstLevel_table9;
 insert into cptFirstLevel_table9 
 select r.sourceId as id, r.term , cast(0 as integer) as reactConcepts, cast(0 as decimal(5,2)) as PercentOfHierarchy
 ,cast(0 as decimal(5,2)) as PercentOfAllReactivated, cast(0 as decimal(5,2)) as PercentOfReactivatedSD,cast(0 as decimal(5,2)) as PercentOfReactivatedP
-from s_statedrootdesc r ;
+from s_inferredrootdesc r ;
 
 
 Update cptFirstLevel_table9 
 set reactConcepts=(select count(*) 
 				from reactConcepts c
-				inner join s_tclosure_stated t 
+				inner join s_tclosure_inferred t
 				on t.descendant=c.id
 				where t.ancestor=cptFirstLevel_table9.id);
 
@@ -80,7 +82,7 @@ if reactCpts>0 then
 
 Update cptFirstLevel_table9 
 set PercentOfHierarchy=(convert(100, decimal(16,2)) * reactConcepts/(select count(*) + 1 
-				from s_tclosure_stated t 
+				from s_tclosure_inferred t
 				where t.ancestor=cptFirstLevel_table9.id));
 
 
@@ -91,7 +93,7 @@ set PercentOfAllReactivated=(convert(100, decimal(16,2)) * reactConcepts/reactCp
 Update cptFirstLevel_table9 
 set PercentOfReactivatedSD=(convert(100, decimal(16,2)) *(select count(*) 
 					from reactConcepts c
-					inner join s_tclosure_stated t 
+					inner join s_tclosure_inferred t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table9.id
 					and c.definitionStatusId=900000000000073002)/reactConcepts)

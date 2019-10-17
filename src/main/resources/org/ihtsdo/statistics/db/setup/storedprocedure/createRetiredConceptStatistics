@@ -50,8 +50,12 @@ values ( 138875005, 'SNOMED CT Concept (SNOMED RT+CTV3)' , cast(0 as integer) , 
 Update cptRootLevel_table3
 set RetiredConcepts=retCpts;
 
+if totCpt>0 then
+
 Update cptRootLevel_table3
 set PercentOfTotal =convert(100, decimal(16,2)) * retCpts/totCpt;
+
+end if;
 
 Update cptRootLevel_table3
 set PercentOfAllRetired =100;
@@ -125,18 +129,18 @@ select r.sourceId as id, r.term , cast(0 as integer) as RetiredConcepts, cast(0 
 ,cast(0 as decimal(5,2)) as PercentOfAllRetired, cast(0 as decimal(5,2)) as PercentOfAmbiguous,cast(0 as decimal(5,2)) as PercentOfDuplicated
 ,cast(0 as decimal(5,2)) as PercentOfErroneous,cast(0 as decimal(5,2)) as PercentOfNotStated ,cast(0 as decimal(5,2)) as PercentOfOutdated
 ,cast(0 as decimal(5,2)) as PercentOfMoved ,cast(0 as decimal(5,2)) as PercentOfLimited
-from s_statedrootdesc r ;
+from s_inferredrootdesc r ;
 
 Update cptFirstLevel_table3
 set RetiredConcepts=(select count(*) 
 					from retConcepts c
-					inner join s_tclosure_stated_pre t 
+					inner join s_tclosure_inferred_pre t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table3.id);
 
 Update cptFirstLevel_table3
 set PercentOfHierarchy =convert(100, decimal(16,2)) * RetiredConcepts/(select count(*) + 1 
-				from s_tclosure_stated t 
+				from s_tclosure_inferred t
 				where t.ancestor=cptFirstLevel_table3.id);
 
 if retCpts>0 then
@@ -149,7 +153,7 @@ set PercentOfAmbiguous = convert(100, decimal(16,2)) * (select count(*)
 								from retConcepts c
 								inner join s_attributevalues a
 								on a.referencedComponentId=c.id
-								inner join s_tclosure_stated_pre t 
+								inner join s_tclosure_inferred_pre t
 								on t.descendant=c.id
 								where t.ancestor=cptFirstLevel_table3.id
 								and a.referencedComponentId=c.id and a.refsetId=900000000000489007
@@ -162,7 +166,7 @@ set PercentOfDuplicated =convert(100, decimal(16,2)) * (select count(*)
 								from retConcepts c
 								inner join s_attributevalues a
 								on a.referencedComponentId=c.id
-								inner join s_tclosure_stated_pre t 
+								inner join s_tclosure_inferred_pre t
 								on t.descendant=c.id
 								where t.ancestor=cptFirstLevel_table3.id
 								and a.referencedComponentId=c.id and a.refsetId=900000000000489007
@@ -174,7 +178,7 @@ set PercentOfErroneous =convert(100, decimal(16,2)) * (select count(*)
 								from retConcepts c
 								inner join s_attributevalues a
 								on a.referencedComponentId=c.id
-								inner join s_tclosure_stated_pre t 
+								inner join s_tclosure_inferred_pre t
 								on t.descendant=c.id
 								where t.ancestor=cptFirstLevel_table3.id
 								and a.referencedComponentId=c.id and a.refsetId=900000000000489007
@@ -184,7 +188,7 @@ set PercentOfErroneous =convert(100, decimal(16,2)) * (select count(*)
 Update cptFirstLevel_table3
 set PercentOfNotStated =convert(100, decimal(16,2)) * (select count(*) 
 								from retConcepts c
-								inner join s_tclosure_stated_pre t 
+								inner join s_tclosure_inferred_pre t
 								on t.descendant=c.id
 								where t.ancestor=cptFirstLevel_table3.id
 								and not exists(
@@ -199,7 +203,7 @@ set PercentOfOutdated =convert(100, decimal(16,2)) * (select count(*)
 								from retConcepts c
 								inner join s_attributevalues a
 								on a.referencedComponentId=c.id
-								inner join s_tclosure_stated_pre t 
+								inner join s_tclosure_inferred_pre t
 								on t.descendant=c.id
 								where t.ancestor=cptFirstLevel_table3.id
 								and a.referencedComponentId=c.id and a.refsetId=900000000000489007
@@ -211,7 +215,7 @@ set PercentOfMoved =convert(100, decimal(16,2)) * (select count(*)
 								from retConcepts c
 								inner join s_attributevalues a
 								on a.referencedComponentId=c.id
-								inner join s_tclosure_stated_pre t 
+								inner join s_tclosure_inferred_pre t
 								on t.descendant=c.id
 								where t.ancestor=cptFirstLevel_table3.id
 								and a.referencedComponentId=c.id and a.refsetId=900000000000489007
@@ -223,7 +227,7 @@ set PercentOfLimited =convert(100, decimal(16,2)) * (select count(*)
 								from retConcepts c
 								inner join s_attributevalues a
 								on a.referencedComponentId=c.id
-								inner join s_tclosure_stated_pre t 
+								inner join s_tclosure_inferred_pre t
 								on t.descendant=c.id
 								where t.ancestor=cptFirstLevel_table3.id
 								and a.referencedComponentId=c.id and a.refsetId=900000000000489007

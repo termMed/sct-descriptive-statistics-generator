@@ -166,13 +166,13 @@ insert into cptFirstLevel_table7
 select r.sourceId as id, r.term , cast(0 as integer) , cast(0 as integer) 
 ,cast(0 as integer), cast(0 as integer),cast(0 as integer) 
 ,cast(0 as integer)  
-from s_statedrootdesc r;
+from s_inferredrootdesc r;
 
 		
 Update cptFirstLevel_table7
 set DESCINSOURCE=(select count(*) 
 					from pointToSourceChanges c
-					inner join s_tclosure_stated t 
+					inner join s_tclosure_inferred t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table7.id);
 
@@ -180,35 +180,35 @@ set DESCINSOURCE=(select count(*)
 Update cptFirstLevel_table7
 set RETIREDDESC =(select count(*) 
 					from retiredDesc c
-					inner join s_tclosure_stated t 
+					inner join s_tclosure_inferred t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table7.id);
 
 Update cptFirstLevel_table7
 set NEWDESC =(select count(*) 
 					from newDescExistConcept c
-					inner join s_tclosure_stated t 
+					inner join s_tclosure_inferred t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table7.id);
 
 Update cptFirstLevel_table7
 set REACTIVATEDDESC =(select count(*) 
 					from reactivDesc c
-					inner join s_tclosure_stated t 
+					inner join s_tclosure_inferred t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table7.id);
 
 Update cptFirstLevel_table7
 set FSNChange =(select count(*) 
 					from fsnCh c
-					inner join s_tclosure_stated t 
+					inner join s_tclosure_inferred t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table7.id);
 
 Update cptFirstLevel_table7
 set AnyChange =(select count(*) 
 					from anyCh c
-					inner join s_tclosure_stated t 
+					inner join s_tclosure_inferred t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table7.id);
 
@@ -220,6 +220,7 @@ values ( 138875005, 'SNOMED CT Concept (SNOMED RT+CTV3)' , cast(0 as decimal(5,2
 ,cast(0 as decimal(5,2)) , cast(0 as decimal(5,2)) ,cast(0 as decimal(5,2)) 
 ,cast(0 as decimal(5,2)) );
 
+if totCpt>0 then
 Update cptRootLevel_table8
 set PERCOFDESCINSOURCE=convert(100, decimal(16,2)) * pTSource / totCpt;
 
@@ -238,6 +239,7 @@ set PercOfFSNChange = convert(100, decimal(16,2)) * vFsnCh / totCpt;
 Update cptRootLevel_table8
 set PercOfAnyChange = convert(100, decimal(16,2)) * vAnyCh / totCpt;
 
+end if;
 
 truncate table cptFirstLevel_table8;
 
@@ -245,41 +247,41 @@ insert into cptFirstLevel_table8
 select r.sourceId as id, r.term , cast(0 as decimal(5,2)) , cast(0 as decimal(5,2)) 
 ,cast(0 as decimal(5,2)), cast(0 as decimal(5,2)) ,cast(0 as decimal(5,2)) 
 ,cast(0 as decimal(5,2)) 
-from s_statedrootdesc r ;
+from s_inferredrootdesc r ;
 
 Update cptFirstLevel_table8
 set PERCOFDESCINSOURCE=convert(100, decimal(16,2)) * (select DESCINSOURCE 
 					from cptFirstLevel_table7 c
 					where c.id=cptFirstLevel_table8.id) /(select count(*) + 1 
-					from s_tclosure_stated t 
+					from s_tclosure_inferred t
 					where t.ancestor=cptFirstLevel_table8.id);
 
 Update cptFirstLevel_table8
 set PERCOFRETIREDDESC =convert(100, decimal(16,2)) * (select RETIREDDESC 
 					from cptFirstLevel_table7 c
 					where c.id=cptFirstLevel_table8.id) /(select count(*) + 1 
-					from s_tclosure_stated t 
+					from s_tclosure_inferred t
 					where t.ancestor=cptFirstLevel_table8.id);
 
 Update cptFirstLevel_table8
 set PERCOFNEWDESC =convert(100, decimal(16,2)) * (select NEWDESC 
 					from cptFirstLevel_table7 c
 					where c.id=cptFirstLevel_table8.id) /(select count(*) + 1 
-					from s_tclosure_stated t 
+					from s_tclosure_inferred t
 					where t.ancestor=cptFirstLevel_table8.id);
 
 Update cptFirstLevel_table8
 set PERCOFREACTIVATEDDESC =convert(100, decimal(16,2)) * (select REACTIVATEDDESC 
 					from cptFirstLevel_table7 c
 					where c.id=cptFirstLevel_table8.id) /(select count(*) + 1 
-					from s_tclosure_stated t 
+					from s_tclosure_inferred t
 					where t.ancestor=cptFirstLevel_table8.id);
 								
 Update cptFirstLevel_table8
 set PercOfFSNChange =convert(100, decimal(16,2)) * (select FSNChange 
 					from cptFirstLevel_table7 c
 					where c.id=cptFirstLevel_table8.id) /(select count(*) + 1 
-					from s_tclosure_stated t 
+					from s_tclosure_inferred t
 					where t.ancestor=cptFirstLevel_table8.id);
 
 
@@ -287,7 +289,7 @@ Update cptFirstLevel_table8
 set PercOfAnyChange =convert(100, decimal(16,2)) * (select AnyChange 
 					from cptFirstLevel_table7 c
 					where c.id=cptFirstLevel_table8.id)/(select count(*) + 1 
-					from s_tclosure_stated t 
+					from s_tclosure_inferred t
 					where t.ancestor=cptFirstLevel_table8.id);
 
 END

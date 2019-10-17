@@ -12,8 +12,8 @@ truncate table cpttable6_details;
 insert into cpttable6_details
 select distinct d2.term, r.id, d.term,'Existing localized concept'
 from actConcepts r
-inner join s_tclosure_stated t on t.descendant=r.id 
-inner join s_statedrootdesc d2 on d2.sourceId=t.ancestor
+inner join s_tclosure_inferred t on t.descendant=r.id
+inner join s_inferredrootdesc d2 on d2.sourceId=t.ancestor
 left join s_descriptions d on d.conceptId=r.id
 and d.active=1
 and d.typeId=900000000000003001;

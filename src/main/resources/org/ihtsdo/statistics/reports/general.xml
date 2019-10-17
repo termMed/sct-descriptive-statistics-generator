@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <reportConfig>
 	<name>General Statistics</name>
-	<inputFile>STATEDROOTDESC</inputFile>
+	<inputFile>INFERREDROOTDESC</inputFile>
 	<inputFile>CONCEPTS</inputFile>
 	<inputFile>DESCRIPTIONS</inputFile>
 	<inputFile>RELATIONSHIPS</inputFile>
-	<inputFile>TCLOSURESTATED</inputFile>
+	<inputFile>TCLOSUREINFERRED</inputFile>
 	<storedProcedure>
 		<name>createGeneralStatistics()</name>
 	</storedProcedure>

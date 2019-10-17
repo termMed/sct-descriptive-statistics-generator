@@ -185,6 +185,8 @@ public class FileProvider {
 	private HashSet<String> snapshotRefsetSimpleFiles;
 
 	private static final String FALLBACK_COMPUTED = "WithPrecomputedDefaults";
+	private String owlExpressionFile;
+	private String snapshotOwlExpressionFile;
 
 	/**
 	 * Gets the concept file.
@@ -678,7 +680,7 @@ public class FileProvider {
 		if (!baseFolder.exists()){
 			baseFolder.mkdirs();
 		}else{
-			FileHelper.emptyFolder(baseFolder);
+//			FileHelper.emptyFolder(baseFolder);
 		}
 
 		tempSortingFolder=new File(baseFolder , TEMP_SORTING_FOLDER);
@@ -698,13 +700,13 @@ public class FileProvider {
 		if (!snapshotFolder.exists()){
 			snapshotFolder.mkdirs();
 		}else{
-			FileHelper.emptyFolder(snapshotFolder);
+//			FileHelper.emptyFolder(snapshotFolder);
 		}
 		completedFilesFolder=new File(baseFolder , COMPLETED_FILES_FOLDER);
 		if (!completedFilesFolder.exists()){
 			completedFilesFolder.mkdirs();
 		}else{
-			FileHelper.emptyFolder(completedFilesFolder);
+//			FileHelper.emptyFolder(completedFilesFolder);
 		}
 
 	}
@@ -962,8 +964,32 @@ public class FileProvider {
 
 			return getTextDefinitionFile();
 		}
+		if (patternTag.equals("rf2-owl-expression")){
+
+			return getOwlExpressionFile();
+		}
 
 		return null;
+	}
+
+	private String getSnapshotOwlExpressionFile() throws Exception {
+		if (snapshotOwlExpressionFile==null){
+			snapshotOwlExpressionFile=FileHelper.getFile(snapshotFolder, "rf2-owl-expression", null, null, null, false, false);
+			if (snapshotOwlExpressionFile==null){
+				getOwlExpressionFile();
+				snapshotOwlExpressionFile=new File(snapshotFolder,new File(owlExpressionFile).getName().toLowerCase().replace("full","snapshot")).getAbsolutePath();
+				ConversionSnapshotDelta.snapshotFile(new File(owlExpressionFile), tempSortingFolder, tempSortedFinalfolder, new File(snapshotOwlExpressionFile), releaseDate, new int[]{0,1}, 0, 1, null, null, null);
+			}
+		}
+		return snapshotOwlExpressionFile;
+	}
+
+	private String getOwlExpressionFile() throws Exception {
+
+		if (owlExpressionFile==null){
+			owlExpressionFile=FileHelper.getFile(fullFolder, "rf2-owl-expression", null, null, null, false, false);
+		}
+		return owlExpressionFile;
 	}
 
 	/**

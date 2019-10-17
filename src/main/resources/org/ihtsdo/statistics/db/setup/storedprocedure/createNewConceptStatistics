@@ -38,9 +38,12 @@ set NewConcepts=newCpts ;
 
 
 
+if totCpt>0 then
+
 Update cptRootLevel_table2 
 set PercentOfTotal=(convert(100, decimal(16,2)) * newCpts/totCpt);
 
+end if;
 
 Update cptRootLevel_table2 
 set PercentOfAllNew=100;
@@ -64,13 +67,13 @@ truncate table cptFirstLevel_table2;
 insert into cptFirstLevel_table2 
 select r.sourceId as id, r.term , cast(0 as integer) as NewConcepts, cast(0 as decimal(5,2)) as PercentOfHierarchy
 ,cast(0 as decimal(5,2)) as PercentOfAllNew, cast(0 as decimal(5,2)) as PercentOfNewSD,cast(0 as decimal(5,2)) as PercentOfNewP
-from s_statedrootdesc r ;
+from s_inferredrootdesc r ;
 
 
 Update cptFirstLevel_table2 
 set NewConcepts=(select count(*) 
 				from newConcepts c
-				inner join s_tclosure_stated t 
+				inner join s_tclosure_inferred t
 				on t.descendant=c.id
 				where t.ancestor=cptFirstLevel_table2.id);
 
@@ -80,7 +83,7 @@ if newCpts>0 then
 
 Update cptFirstLevel_table2 
 set PercentOfHierarchy=(convert(100, decimal(16,2)) * NewConcepts/(select count(*) + 1 
-				from s_tclosure_stated t 
+				from s_tclosure_inferred t
 				where t.ancestor=cptFirstLevel_table2.id));
 
 
@@ -91,7 +94,7 @@ set PercentOfAllNew=(convert(100, decimal(16,2)) * NewConcepts/newCpts);
 Update cptFirstLevel_table2 
 set PercentOfNewSD=(convert(100, decimal(16,2)) *(select count(*) 
 					from newConcepts c
-					inner join s_tclosure_stated t 
+					inner join s_tclosure_inferred t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table2.id
 					and c.definitionStatusId=900000000000073002)/NewConcepts)

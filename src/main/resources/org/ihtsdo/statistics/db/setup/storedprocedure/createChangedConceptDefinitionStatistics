@@ -39,15 +39,15 @@ values ( 138875005, 'SNOMED CT Concept (SNOMED RT+CTV3)'  , cast(0 as integer) ,
 
 
 
-truncate table statedChanges;
+truncate table axiomChanges;
 truncate table inferredChanges ;
 
-insert into statedChanges 
+insert into axiomChanges
 				select distinct a.id,case a.definitionStatusId 
 					when 900000000000074008 then 1
 					else 0 end case
-				from actConcepts a inner join s_statedrels r
-				on r.sourceId=a.id
+				from actConcepts a inner join s_owlexpress r
+				on r.referencedComponentId=a.id
 				where r.effectiveTime=releaseDate;
 				
 				
@@ -61,7 +61,7 @@ insert into inferredChanges
 
 -- insert into testtime values (1,'statedCh and inferredCh' , CURRENT_TIMESTAMP);
 select count(*) into statedCh
-from statedChanges;
+from axiomChanges;
 
 Update cptRootLevel_table4
 set StatedDefChange=statedCh;
@@ -118,7 +118,7 @@ truncate table anyCh ;
 
 -- insert into testtime values (1,'anyCh' , CURRENT_TIMESTAMP);
 insert into anyCh 
-	select id from statedChanges
+	select id from axiomChanges
 	union
 	select id from inferredChanges
 	union
@@ -141,15 +141,15 @@ truncate table cptFirstLevel_table4;
 insert into cptFirstLevel_table4
 select r.sourceId as id, r.term , cast(0 as integer) as AnyChange, cast(0 as integer) as StatedDefChange
 ,cast(0 as integer) as InferredDefChange, cast(0 as integer) as Primitive2SD,cast(0 as integer) as SD2Primitive
-from s_statedrootdesc r;
+from s_inferredrootdesc r;
 
 -- insert into testtime values (2,'cptFirstLevel_table4' , CURRENT_TIMESTAMP);
 
 -- insert into testtime values (1,'StatedDefChange' , CURRENT_TIMESTAMP);
 Update cptFirstLevel_table4
 set StatedDefChange=(select count(*) 
-					from statedChanges c
-					inner join s_tclosure_stated t 
+					from axiomChanges c
+					inner join s_tclosure_inferred t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table4.id);
 
@@ -159,7 +159,7 @@ set StatedDefChange=(select count(*)
 Update cptFirstLevel_table4
 set InferredDefChange =(select count(*) 
 					from inferredChanges c
-					inner join s_tclosure_stated t 
+					inner join s_tclosure_inferred t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table4.id);
 -- insert into testtime values (2,'InferredDefChange' , CURRENT_TIMESTAMP);
@@ -169,7 +169,7 @@ set InferredDefChange =(select count(*)
 Update cptFirstLevel_table4
 set Primitive2SD =(select count(*) 
 					from prim2SD c
-					inner join s_tclosure_stated t 
+					inner join s_tclosure_inferred t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table4.id);
 -- insert into testtime values (2,'Primitive2SD' , CURRENT_TIMESTAMP);
@@ -179,7 +179,7 @@ set Primitive2SD =(select count(*)
 Update cptFirstLevel_table4
 set SD2Primitive =(select count(*) 
 					from SD2prim c
-					inner join s_tclosure_stated t 
+					inner join s_tclosure_inferred t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table4.id);
 -- insert into testtime values (2,'SD2Primitive' , CURRENT_TIMESTAMP);
@@ -188,7 +188,7 @@ set SD2Primitive =(select count(*)
 Update cptFirstLevel_table4
 set AnyChange =(select count(*) 
 					from anyCh c
-					inner join s_tclosure_stated t 
+					inner join s_tclosure_inferred t
 					on t.descendant=c.id
 					where t.ancestor=cptFirstLevel_table4.id);
 
@@ -205,6 +205,8 @@ values ( 138875005, 'SNOMED CT Concept (SNOMED RT+CTV3)' , cast(0 as decimal(5,2
 -- insert into testtime values (2,'cptRootLevel_table5' , CURRENT_TIMESTAMP);
 
 -- insert into testtime values (1,'cptRootLevel_table5 fields update' , CURRENT_TIMESTAMP);
+
+if totCpt>0 then
 Update cptRootLevel_table5
 set PercOfStatedDefChange=convert(100, decimal(16,2)) * statedCh / totCpt;
 
@@ -221,6 +223,7 @@ set PercOfSD2Primitive = convert(100, decimal(16,2)) * vSD2Prim / totCpt;
 Update cptRootLevel_table5
 set PercOfAnyChange = convert(100, decimal(16,2)) * vAnyCh / totCpt;
 
+end if;
 
 -- insert into testtime values (2,'cptRootLevel_table5 fields update' , CURRENT_TIMESTAMP);
 truncate table cptFirstLevel_table5;
@@ -230,7 +233,7 @@ truncate table cptFirstLevel_table5;
 insert into cptFirstLevel_table5 
 select r.sourceId as id, r.term , cast(0 as decimal(5,2)) as PercOfAnyChange, cast(0 as decimal(5,2)) as PercOfStatedDefChange
 ,cast(0 as decimal(5,2)) as PercOfInferredDefChange, cast(0 as decimal(5,2)) as PercOfPrimitive2SD,cast(0 as decimal(5,2)) as PercOfSD2Primitive 
-from s_statedrootdesc r ;
+from s_inferredrootdesc r ;
 
 -- insert into testtime values (2,'cptFirstLevel_table5' , CURRENT_TIMESTAMP);
 
@@ -239,35 +242,35 @@ Update cptFirstLevel_table5
 set PercOfStatedDefChange=convert(100, decimal(16,2)) * (select StatedDefChange 
 					from cptFirstLevel_table4 c
 					where c.id=cptFirstLevel_table5.id) /(select count(*) + 1 
-					from s_tclosure_stated t 
+					from s_tclosure_inferred t
 					where t.ancestor=cptFirstLevel_table5.id);
 
 Update cptFirstLevel_table5
 set PercOfInferredDefChange =convert(100, decimal(16,2)) * (select InferredDefChange 
 					from cptFirstLevel_table4 c
 					where c.id=cptFirstLevel_table5.id) /(select count(*) + 1 
-					from s_tclosure_stated t 
+					from s_tclosure_inferred t
 					where t.ancestor=cptFirstLevel_table5.id);
 
 Update cptFirstLevel_table5
 set PercOfPrimitive2SD =convert(100, decimal(16,2)) * (select Primitive2SD 
 					from cptFirstLevel_table4 c
 					where c.id=cptFirstLevel_table5.id) /(select count(*) + 1 
-					from s_tclosure_stated t 
+					from s_tclosure_inferred t
 					where t.ancestor=cptFirstLevel_table5.id);
 
 Update cptFirstLevel_table5
 set PercOfSD2Primitive =convert(100, decimal(16,2)) * (select SD2Primitive 
 					from cptFirstLevel_table4 c
 					where c.id=cptFirstLevel_table5.id) /(select count(*) + 1 
-					from s_tclosure_stated t 
+					from s_tclosure_inferred t
 					where t.ancestor=cptFirstLevel_table5.id);
 								
 Update cptFirstLevel_table5
 set PercOfAnyChange =convert(100, decimal(16,2)) * (select AnyChange 
 					from cptFirstLevel_table4 c
 					where c.id=cptFirstLevel_table5.id)/(select count(*) + 1 
-					from s_tclosure_stated t 
+					from s_tclosure_inferred t
 					where t.ancestor=cptFirstLevel_table5.id);
 
 -- insert into testtime values (2,'cptFirstLevel_table5  fields update' , CURRENT_TIMESTAMP);

@@ -66,7 +66,10 @@ public class ImportManager {
 	
 	/** The stated rels. */
 	boolean statedRels;
-	
+
+	/** The owl expression. */
+	boolean owlExpress;
+
 	/** The text defins. */
 	boolean textDefins;
 	
@@ -107,7 +110,7 @@ public class ImportManager {
 	boolean statedRels_pre;
 	
 	/** The t closure stated_pre. */
-	boolean tClosureStated_pre;
+	boolean tClosureInferred_pre;
 
 	private String refsetId;
 	
@@ -140,12 +143,15 @@ public class ImportManager {
 		/** The statedrels. */
 		STATEDRELS("s_statedrels", "rf2-relationships",null,"stated",null,false,"sourceId,effectiveTime,active",null,null),
 		
-		/** The statedrootdesc. */
-		STATEDROOTDESC("s_statedrootdesc", "rf2-statedrootdesc",null,"stated",null,false,"sourceId,term",new Integer[]{2,5,7},new String[]{"1","138875005","116680003"}),
+		/** The inferredrootdesc. */
+		INFERREDROOTDESC("s_inferredrootdesc", "rf2-inferredrootdesc",null,null,"stated",false,"sourceId,term",new Integer[]{2,5,7},new String[]{"1","138875005","116680003"}),
 		
 		/** The statedrels previous. */
 		STATEDRELS_PREVIOUS("s_statedrels_pre", null,null,"stated",null,true,null,null,null),
-		
+
+		/** The owlExpression. */
+		OWLEXPRESS("s_owlexpress", "rf2-owl-expression",null,null,null,false,"referencedComponentId,effectiveTime,active",null,null),
+
 		/** The textdefins. */
 		TEXTDEFINS("s_textdefin",null,null,null,null,false,null,null,null),
 		
@@ -176,11 +182,11 @@ public class ImportManager {
 		/** The tclosurestated. */
 		TCLOSURESTATED("s_tclosure_stated","transitive-closure",null,"stated","pre",false,null,null,null),
 		
-		/** The tclosurestated previous. */
-		TCLOSURESTATED_PREVIOUS("s_tclosure_stated_pre","transitive-closure",null,"stated",null,true,null,null,null),
+		/** The tclosureinferred previous. */
+		TCLOSUREINFERRED_PREVIOUS("s_tclosure_inferred_pre","transitive-closure",null,"pre",null,true,null,null,null),
 		
 		/** The tclosureinferred. */
-		TCLOSUREINFERRED("s_tclosure_inferred",null,null,null,null,false,null,null,null);
+		TCLOSUREINFERRED("s_tclosure_inferred","transitive-closure",null,"inferred","pre",false,null,null,null);
 
 		/** The table name. */
 		private String tableName;
@@ -539,116 +545,122 @@ public class ImportManager {
 					ReportConfig reportCfg=ResourceUtils.getReportConfig(report);
 
 					for (TABLE table:reportCfg.getInputFile()){
-						switch (table){
-						case STATEDROOTDESC:
-							if (rootDesc){
-								continue;
-							}
-							rootDesc=true;
-							break;
-						case CONCEPTS:
-							if (concepts){
-								continue;
-							}
-							concepts=true;
-							break;
-						case DESCRIPTIONS:
-							if (descriptions){
-								continue;
-							}
-							descriptions=true;
-							break;
-						case DESCRIPTIONS_PREVIOUS:
-							if (descriptions_pre){
-								continue;
-							}
-							descriptions_pre=true;
-							break;
-						case EXT_LANGUAGE:
-							if (extLanguage){
-								continue;
-							}
-							extLanguage=true;
-							
-							break;
-						case RELATIONSHIPS:
-							if (relationships){
-								continue;
-							}
-							relationships=true;
-							break;
-						case STATEDRELS :
-							if (statedRels){
-								continue;
-							}
-							statedRels=true;
-							break;
-						case TCLOSUREINFERRED :
-							if (tClosureInferred){
-								continue;
-							}
-							tClosureInferred=true;
-							break;
-						case TCLOSURESTATED :
-							if (tClosureStated){
-								continue;
-							}
-							tClosureStated=true;
-							break;
-						case CONCEPTS_PREVIOUS :
-							if (concepts_pre){
-								continue;
-							}
-							concepts_pre=true;
-							break;
-						case RELATIONSHIPS_PREVIOUS :
-							if (relationships_pre){
-								continue;
-							}
-							relationships_pre=true;
-							break;
-						case STATEDRELS_PREVIOUS :
-							if (statedRels_pre){
-								continue;
-							}
-							statedRels_pre=true;
-							break;
-						case LANGUAGE_PREVIOUS :
-							if (refsetId!=null && !refsetId.equals("")){
-								Integer[] newfields=new Integer[]{2,4,6};
-								String[] newValues=new String[]{"1",refsetId,"900000000000548007"};
-								table.setFieldFilter(newfields);
-								table.setFieldFilterValue(newValues);
-							}
-							if (lang_pre){
-								continue;
-							}
-							lang_pre=true;
-							break;
-						case LANGUAGE :
-							if (refsetId!=null && !refsetId.equals("")){
-								Integer[] newfields=new Integer[]{2,4,6};
-								String[] newValues=new String[]{"1",refsetId,"900000000000548007"};
-								table.setFieldFilter(newfields);
-								table.setFieldFilterValue(newValues);
-							}
-							if (lang){
-								continue;
-							}
-							lang=true;
-							break;
-						case TCLOSURESTATED_PREVIOUS :
-							if (tClosureStated_pre){
-								continue;
-							}
-							tClosureStated_pre=true;
-							break;
-						case SAME_AS_ASSOCIATIONS :
-							if (same_associations){
-								continue;
-							}
-							same_associations=true;
-							break;
+						switch (table) {
+							case INFERREDROOTDESC:
+								if (rootDesc) {
+									continue;
+								}
+								rootDesc = true;
+								break;
+							case CONCEPTS:
+								if (concepts) {
+									continue;
+								}
+								concepts = true;
+								break;
+							case DESCRIPTIONS:
+								if (descriptions) {
+									continue;
+								}
+								descriptions = true;
+								break;
+							case DESCRIPTIONS_PREVIOUS:
+								if (descriptions_pre) {
+									continue;
+								}
+								descriptions_pre = true;
+								break;
+							case EXT_LANGUAGE:
+								if (extLanguage) {
+									continue;
+								}
+								extLanguage = true;
+
+								break;
+							case RELATIONSHIPS:
+								if (relationships) {
+									continue;
+								}
+								relationships = true;
+								break;
+							case STATEDRELS:
+								if (statedRels) {
+									continue;
+								}
+								statedRels = true;
+								break;
+							case OWLEXPRESS:
+								if (owlExpress) {
+									continue;
+								}
+								owlExpress = true;
+								break;
+							case TCLOSUREINFERRED:
+								if (tClosureInferred) {
+									continue;
+								}
+								tClosureInferred = true;
+								break;
+							case TCLOSURESTATED:
+								if (tClosureStated) {
+									continue;
+								}
+								tClosureStated = true;
+								break;
+							case CONCEPTS_PREVIOUS:
+								if (concepts_pre) {
+									continue;
+								}
+								concepts_pre = true;
+								break;
+							case RELATIONSHIPS_PREVIOUS:
+								if (relationships_pre) {
+									continue;
+								}
+								relationships_pre = true;
+								break;
+							case STATEDRELS_PREVIOUS:
+								if (statedRels_pre) {
+									continue;
+								}
+								statedRels_pre = true;
+								break;
+							case LANGUAGE_PREVIOUS:
+								if (refsetId != null && !refsetId.equals("")) {
+									Integer[] newfields = new Integer[]{2, 4, 6};
+									String[] newValues = new String[]{"1", refsetId, "900000000000548007"};
+									table.setFieldFilter(newfields);
+									table.setFieldFilterValue(newValues);
+								}
+								if (lang_pre) {
+									continue;
+								}
+								lang_pre = true;
+								break;
+							case LANGUAGE:
+								if (refsetId != null && !refsetId.equals("")) {
+									Integer[] newfields = new Integer[]{2, 4, 6};
+									String[] newValues = new String[]{"1", refsetId, "900000000000548007"};
+									table.setFieldFilter(newfields);
+									table.setFieldFilterValue(newValues);
+								}
+								if (lang) {
+									continue;
+								}
+								lang = true;
+								break;
+							case TCLOSUREINFERRED_PREVIOUS:
+								if (tClosureInferred_pre) {
+									continue;
+								}
+								tClosureInferred_pre = true;
+								break;
+							case SAME_AS_ASSOCIATIONS:
+								if (same_associations) {
+									continue;
+								}
+								same_associations = true;
+								break;
 						}
 						ImportRf2Table(table);
 					}
@@ -825,10 +837,10 @@ public class ImportManager {
 			String isasFile=null;
 			String isasFullFile;
 			if (releaseDependencies){
-				isasFullFile=CurrentFile.get().getCompleteStatedRelationshipFull();
+				isasFullFile=CurrentFile.get().getCompleteRelationshipFull();
 			}else{
 
-				isasFullFile=CurrentFile.get().getStatedRelationshipFile();
+				isasFullFile=CurrentFile.get().getRelationshipFile();
 			}
 			File isasTmpSnapshot=new File(targetFolder,"tmp_" + ((table.getFileNameMustHave()==null)? "":table.getFileNameMustHave()) + "relationships" + (table.isPrevious()?"_pre":"") + ".txt");
 			File isasSnapshot=new File(targetFolder,((table.getFileNameMustHave()==null)? "":table.getFileNameMustHave()) + "relationships" + (table.isPrevious()?"_pre":"") + ".txt");
@@ -859,14 +871,14 @@ public class ImportManager {
 		String txt ="";
 		File txtFile;
 		
-		if (table.getPatternTag().equals("rf2-statedrootdesc")){
+		if (table.getPatternTag().equals("rf2-inferredrootdesc")){
 			logger.info("Getting Top Level");
 			if (!releaseDependencies){
 				logger.info("Releases dependencies folders are null");
-				txt=CurrentFile.get().getStatedRelationshipFile();
+				txt=CurrentFile.get().getRelationshipFile();
 				
 			}else{
-				txt = CurrentFile.get().getCompleteStatedRelationshipFull();
+				txt = CurrentFile.get().getCompleteRelationshipFull();
 			}
 		}else if (table.getTableName().toLowerCase().equals("s_ext_languages")){
 			txt=CurrentFile.get().getSnapshotExtensionLanguage();
@@ -894,7 +906,7 @@ public class ImportManager {
 		}else{
 			ConversionSnapshotDelta.snapshotFile(new File(txt), sortFolderTmp, sortedFolderTmp, txtFile, snapshotDate, new int[]{0,1}, 0, 1,null,null,outputFields);
 		}
-		if (table.getPatternTag().equals("rf2-statedrootdesc")){
+		if (table.getPatternTag().equals("rf2-inferredrootdesc")){
 			logger.info("Getting Top Level terms");
 			getDescriptionsForTopLevel(txtFile);
 		}

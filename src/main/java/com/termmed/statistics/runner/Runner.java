@@ -125,6 +125,7 @@ public class Runner {
 				removeReducedFolder();
 				changedDate=true;
 				changedPreviousDate=true;
+				
 			}
 			
 			Class.forName("org.hsqldb.jdbcDriver");			
@@ -252,7 +253,19 @@ public class Runner {
 		}
 		String releaseDate = xmlConfig.getString("releaseDate");
 		String previousReleaseDate = xmlConfig.getString("previousReleaseDate");
-		
+
+		File rootFolder=new File(".");
+		File[] files = rootFolder.listFiles();
+		for (File releasefolder : files) {
+			if(releasefolder.isDirectory() && !releasefolder.isHidden()){
+				if (releasefolder.getName().startsWith("release")){
+					if (!releasefolder.getName().equals("release" + releaseDate) 
+							&& !releasefolder.getName().equals("release" + previousReleaseDate)){
+							FileHelper.emptyFolder(releasefolder);
+					}
+				}
+			}
+		}
 		CurrentFile.init(sourceFolder, new File("release" + releaseDate),releaseDependencies, releaseDate);
 		PreviousFile.init(sourceFolder, new File("release" + previousReleaseDate),releaseDependencies, previousReleaseDate);
 		
@@ -293,11 +306,11 @@ public class Runner {
 
 	private static void removeReducedFolder(){
 		File reducedSnapshotFolder = new File("reducedSnapshotFolder");
-		if (!reducedSnapshotFolder.exists()){
+		if (reducedSnapshotFolder.exists()){
 			FileHelper.emptyFolder(reducedSnapshotFolder);
 		}
 		File previousReducedSnapshotFolder = new File("previousReducedSnapshotFolder");
-		if (!previousReducedSnapshotFolder.exists()){
+		if (previousReducedSnapshotFolder.exists()){
 			FileHelper.emptyFolder(previousReducedSnapshotFolder);
 		}
 	}

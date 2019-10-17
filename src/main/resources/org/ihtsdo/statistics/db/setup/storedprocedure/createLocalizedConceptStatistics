@@ -64,20 +64,20 @@ truncate table cptFirstLevel_table6;
 insert into cptFirstLevel_table6 
 select r.sourceId as id, r.term , cast(0 as integer) , cast(0 as decimal(5,2))
 ,cast(0 as integer), cast(0 as decimal(5,2)) 
-from s_statedrootdesc r ;
+from s_inferredrootdesc r ;
 
 
 Update cptFirstLevel_table6
 set TotalLocalized=(select count(*) 
 				from actConcepts c
-				inner join s_tclosure_stated t 
+				inner join s_tclosure_inferred t
 				on t.descendant=c.id
 				where t.ancestor=cptFirstLevel_table6.id);
 
 
 Update cptFirstLevel_table6
 set PercentOfHTotal=(convert(100, decimal(16,2)) * TotalLocalized/(select count(*) + 1 
-				from s_tclosure_stated t 
+				from s_tclosure_inferred t
 				where t.ancestor=cptFirstLevel_table6.id));
 
 if newCpts>0 then
@@ -85,7 +85,7 @@ if newCpts>0 then
 Update cptFirstLevel_table6
 set NewLocConcepts=(select count(*) 
 				from newConcepts c
-				inner join s_tclosure_stated t 
+				inner join s_tclosure_inferred t
 				on t.descendant=c.id
 				where t.ancestor=cptFirstLevel_table6.id);
 

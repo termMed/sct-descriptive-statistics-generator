@@ -34,34 +34,34 @@ public class TClosure {
 
 	/** The parent hier. */
 	HashMap<Long,HashSet<Long>>parentHier;
-	
+
 	/** The children hier. */
 	HashMap<Long,HashSet<Long>>childrenHier;
-	
+
 	/** The isarelationshiptypeid. */
 	private long ISARELATIONSHIPTYPEID=116680003l;
-	
+
 	/** The root concept. */
 	private String ROOT_CONCEPT = "138875005";
-	
+
 	/** The rf2 rels. */
 	String rf2Rels;
-	
+
 	/** The h control. */
 	private HashSet<Long> hControl;
-	
+
 	/** The source index. */
 	private int sourceIndex;
-	
+
 	/** The type index. */
 	private int typeIndex;
-	
+
 	/** The destination index. */
 	private int destinationIndex;
-	
+
 	/** The active index. */
 	private Integer activeIndex;
-	
+
 	/**
 	 * Instantiates a new t closure.
 	 *
@@ -125,7 +125,7 @@ public class TClosure {
 			br.close();
 		}		
 	}
-	
+
 	/**
 	 * Adds the rel.
 	 *
@@ -210,7 +210,7 @@ public class TClosure {
 		writeHierarchy(bw);
 		bw.close();
 	}
-	
+
 	/**
 	 * To file first level hierarchy.
 	 *
@@ -268,7 +268,7 @@ public class TClosure {
 		}
 
 	}
-	
+
 	/**
 	 * Write first level hierarchy.
 	 *
@@ -276,11 +276,13 @@ public class TClosure {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private void writeFirstLevelHierarchy(BufferedWriter bw) throws IOException{
-
-		for (Long child: childrenHier.get(Long.parseLong(ROOT_CONCEPT))){
-			hControl=new HashSet<Long>();
-			writeDescendants(bw,child,child);
-			hControl=null;
+		HashSet<Long> children = childrenHier.get(Long.parseLong(ROOT_CONCEPT));
+		if (children!=null){
+			for (Long child: children){
+				hControl=new HashSet<Long>();
+				writeDescendants(bw,child,child);
+				hControl=null;
+			}
 		}
 
 	}
@@ -311,7 +313,7 @@ public class TClosure {
 			}
 		}		
 	}
-	
+
 	/**
 	 * Write descendants.
 	 *
@@ -390,18 +392,18 @@ public class TClosure {
 		bw.append("\t");
 		bw.append("parent");
 		bw.append("\r\n");
-	
+
 		for (Long concept:sdConcepts){
-			
+
 			HashSet<Long>primProx=getProximalPrimitives(concept, pConcepts);
-			
+
 			for (Long prim:primProx){
 				bw.append(concept.toString());
 				bw.append("\t");
 				bw.append(prim.toString());
 				bw.append("\r\n");
 			}
-			
+
 		}
 		bw.close();
 		bw=null;
@@ -418,11 +420,13 @@ public class TClosure {
 			HashSet<Long> pConcepts) {
 		HashSet<Long>ret=new HashSet<Long>();
 		HashSet<Long> parents = parentHier.get(concept);
-		for (Long parent:parents){
-			if (pConcepts.contains(parent)){
-				addNewProximalParent(ret,parent);
-			}else{
-				ret.addAll(getProximalPrimitives(parent,pConcepts));
+		if (parents!=null){
+			for (Long parent:parents){
+				if (pConcepts.contains(parent)){
+					addNewProximalParent(ret,parent);
+				}else{
+					ret.addAll(getProximalPrimitives(parent,pConcepts));
+				}
 			}
 		}
 		return ret;

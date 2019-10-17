@@ -151,112 +151,6 @@
 				<regex>[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}\\t\d{8}\\t\d{1}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}$</regex>
 			</contentRule>
 		</file>
-		<!-- <file>
-			<fileType>rf2-refinability</fileType>
-			<namePattern>
-				<regex>.*Refinability.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*Refinability.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>id\\teffectiveTime\\tactive\\tmoduleId\\tref[sS]etId\\treferencedComponentId\\tvalueId$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}\\t\d{8}\\t\d{1}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}$</regex>
-			</contentRule>
-		</file> -->
-		<!-- Commented to avoid match with relationships
-			<file>
-			<fileType>rf2-qualifier</fileType>
-			<namePattern>
-				<regex>.*Qualifier.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*Qualifier.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>id\\teffectiveTime\\tactive\\tmoduleId\\tsourceId\\tdestinationId\\trelationshipGroup\\ttypeId\\tcharacteristicTypeId\\tmodifierId$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t\d{8}\\t\d{1}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}\\t\d{1\,3}\\t\d{3\,}\\t((\-1)|(\d{1\,}))\\t\d{3\,}$</regex>
-			</contentRule>
-		</file> -->
-		<!-- <file>
-			<fileType>rf2-componenthistory</fileType>
-			<namePattern>
-				<regex>.*ComponentHistory.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*ComponentHistory.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>COMPONENTID\\tRELEASEVERSION\\tCHANGETYPE\\tSTATUS\\tREASON$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t\d{3\,}\\t\d{1}\\t\d{1}\\t.*$</regex>
-			</contentRule>
-		</file> -->
-		<!-- <file>
-			<fileType>rf2-historicalrelationshipidentifiers</fileType>
-			<namePattern>
-				<regex>.*HistoricalRelationshipIdentifiers.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*HistoricalRelationshipIdentifiers.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>id\\teffectiveTime\\tactive\\tmoduleId\\tref[sS]etId\\treferencedRefsetMemberId\\tvalue$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}\\t\d{8}\\t\d{1}\\t\d{3\,}\\t[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}\\t[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}\\t\d{3\,}$</regex>
-			</contentRule>
-		</file> -->
-		<!-- <file>
-			<fileType>rf2-retiredisarelationship</fileType>
-			<namePattern>
-				<regex>.*RetiredIsaRelationship.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*RetiredIsaRelationship.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>id\\teffectiveTime\\tactive\\tmoduleId\\tsourceId\\tdestinationId\\trelationshipGroup\\ttypeId\\tcharacteristicTypeId\\tmodifierId$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t\d{8}\\t\d{1}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}\\t\d{1\,3}\\t\d{3\,}\\t((\-1)|(\d{1\,}))\\t\d{3\,}$</regex>
-			</contentRule>
-		</file> -->
-		<!-- <file>
-			<fileType>rf2-retiredstatedisarelationship</fileType>
-			<namePattern>
-				<regex>.*RetiredStatedIsaRelationship.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*RetiredStatedIsaRelationship.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>id\\teffectiveTime\\tactive\\tmoduleId\\tsourceId\\tdestinationId\\trelationshipGroup\\ttypeId\\tcharacteristicTypeId\\tmodifierId$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t\d{8}\\t\d{1}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}\\t\d{1\,3}\\t\d{3\,}\\t((\-1)|(\d{1\,}))\\t\d{3\,}$</regex>
-			</contentRule>
-		</file> -->
-		<file>
-			<fileType>rf2-subsets</fileType>
-			<namePattern>
-				<regex>.*Subsets.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*Subsets.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>id\\teffectiveTime\\tactive\\tmoduleId\\tSUBSETID\\tSUBSETORIGINALID\\tSUBSETVERSION\\tSUBSETNAME\\tSUBSETTYPE\\tLANGUAGECODE\\tREALMID\\tCONTEXTID$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t\d{8}\\t\d{1}\\t\d{3\,}\\t\d+\\t\d+\\t\d+\\t.+\\t\d{1}\\t.+\\t.+\\t\d{1}$</regex>
-			</contentRule>
-		</file>
 		<file>
 			<fileType>rf2-crossmapsets</fileType>
 			<namePattern>
@@ -407,21 +301,6 @@
 				<regex>\d{3\,}\\t\d{8}\\t\d{1}\\t\d{3\,}\\t\d{3\,}\\t\w+\\t\d{3\,}\\t.+\\t\d{3\,}$</regex>
 			</contentRule>
 		</file>
-		<!-- <file>
-			<fileType>rf2-statedrelationship</fileType>
-			<namePattern>
-				<regex>.*StatedRelationship.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*StatedRelationship.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>id\\teffectiveTime\\tactive\\tmoduleId\\tsourceId\\tdestinationId\\trelationshipGroup\\ttypeId\\tcharacteristicTypeId\\tmodifierId$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t\d{8}\\t\d{1}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}\\t\d{1\,3}\\t\d{3\,}\\t((\-1)|(\d{1\,}))\\t\d{3\,}$</regex>
-			</contentRule>
-		</file> -->
 		<file>
 			<fileType>rf2-relationships</fileType>
 			<namePattern>
@@ -468,168 +347,18 @@
 			</contentRule>
 		</file>
 		<file>
-			<fileType>rf1-concepts</fileType>
+			<fileType>rf2-owl-expression</fileType>
 			<namePattern>
-				<regex>.*concept.*</regex>
+				<regex>.*OWLExpression.*</regex>
 			</namePattern>
 			<nameRule>
-				<regex>.*concepts.*</regex>
+				<regex>.*OWLExpression.*</regex>
 			</nameRule>
 			<headerRule>
-				<regex>CONCEPTID\\tCONCEPTSTATUS\\tFULLYSPECIFIEDNAME\\tCTV3ID\\tSNOMEDID\\tISPRIMITIVE$</regex>
+				<regex>id\\teffectiveTime\\tactive\\tmoduleId\\trefsetId\\treferencedComponentId\\towlExpression$</regex>
 			</headerRule>
 			<contentRule>
-				<regex>\d{3\,}\\t\d+\\t.+\\t.+\\t.+\\t\d{1}$</regex>
-			</contentRule>
-		</file>
-		<file>
-			<fileType>rf1-descriptions</fileType>
-			<namePattern>
-				<regex>.*descriptions.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*descriptions.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>DESCRIPTIONID\\tDESCRIPTIONSTATUS\\tCONCEPTID\\tTERM\\tINITIALCAPITALSTATUS\\tDESCRIPTIONTYPE\\tLANGUAGECODE$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t\d{1}\\t\d{3\,}\\t.+\\t\d{1}\\t\d{1}\\t.+$</regex>
-			</contentRule>
-		</file>
-		<file>
-			<fileType>rf1-relationships</fileType>
-			<namePattern>
-				<regex>.*relationships.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*relationships.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>RELATIONSHIPID\\tCONCEPTID1\\tRELATIONSHIPTYPE\\tCONCEPTID2\\tCHARACTERISTICTYPE\\tREFINABILITY\\tRELATIONSHIPGROUP$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}\\t\d{1}\\t\d{1}\\t\d{1\,2}$</regex>
-			</contentRule>
-		</file>
-		<file>
-			<fileType>rf1-subsets</fileType>
-			<namePattern>
-				<regex>.*subsets.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*subsets.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>SUBSETID\\tSUBSETORIGINALID\\tSUBSETVERSION\\tSUBSETNAME\\tSUBSETTYPE\\tLANGUAGECODE\\tREALMID\\tCONTEXTID$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t\d{3\,}\\t\d{1}\\t.+\\t\d{1}\\t.+\\t\d{1}\\t\d{1}$</regex>
-			</contentRule>
-		</file>
-		<file>
-			<fileType>rf1-subsetmembers</fileType>
-			<namePattern>
-				<regex>.*members.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*members.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>SUBSETID\\tMEMBERID\\tMEMBERSTATUS\\tLINKEDID$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d+\\t\d{3\,}\\t\d{1}\\t\d*$</regex>
-			</contentRule>
-		</file>
-		<file>
-			<fileType>rf1-crossmaps</fileType>
-			<namePattern>
-				<regex>.*cross.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*cross.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>MAPSETID\\tMAPCONCEPTID\\tMAPOPTION\\tMAPPRIORITY\\tMAPTARGETID\\tMAPRULE\\tMAPADVICE$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t\d{3\,}\\t\d*\\t\d*\\t.+\\t\d*\\t\d*$</regex>
-			</contentRule>
-		</file>
-		<file>
-			<fileType>rf1-crossmapsets</fileType>
-			<namePattern>
-				<regex>.*sets.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*sets.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>MAPSETID\\tMAPSETNAME\\tMAPSETTYPE\\tMAPSETSCHEMEID\\tMAPSETSCHEMENAME\\tMAPSETSCHEMEVERSION\\tMAPSETREALMID\\tMAPSETSEPARATOR\\tMAPSETRULETYPE$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t.+\\t\d{1}\\t.+\\t.+\\t\d+\\t\d*\\t.{1}\\t\d*$</regex>
-			</contentRule>
-		</file>
-		<file>
-			<fileType>rf1-crossmaptargets</fileType>
-			<namePattern>
-				<regex>.*targets.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*targets.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>TARGETID\\tTARGETSCHEMEID\\tTARGETCODES\\tTARGETRULE\\tTARGETADVICE$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t.*\\t.*\\t.*\\t.*$</regex>
-			</contentRule>
-		</file>
-		<file>
-			<fileType>rf1-componenthistory</fileType>
-			<namePattern>
-				<regex>.*componenthistory.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*componenthistory.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>COMPONENTID\\tRELEASEVERSION\\tCHANGETYPE\\tSTATUS\\tREASON$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t\d{3\,}\\t\d{1}\\t\d{1\,2}\\t.*$</regex>
-			</contentRule>
-		</file>
-		<file>
-			<fileType>rf1-references</fileType>
-			<namePattern>
-				<regex>.*references.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*references.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>COMPONENTID\\tREFERENCETYPE\\tREFERENCEDID$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t\d{1}\\t\d{3\,}$</regex>
-			</contentRule>
-		</file>
-		<file>
-			<fileType>rf1-textdefinitions</fileType>
-			<namePattern>
-				<regex>.*TextDefinition.*</regex>
-			</namePattern>
-			<nameRule>
-				<regex>.*TextDefinition.*</regex>
-			</nameRule>
-			<headerRule>
-				<regex>CONCEPTID\\tSNOMEDID\\tFULLYSPECIFIEDNAME\\tDEFINITION$</regex>
-			</headerRule>
-			<contentRule>
-				<regex>\d{3\,}\\t.+\\t.+\\t.+$</regex>
+				<regex>[\w]{8}-[\w]{4}-[\w]{4}-[\w]{4}-[\w]{12}\\t\d{8}\\t\d{1}\\t\d{3\,}\\t\d{3\,}\\t\d{3\,}\\t.+$</regex>
 			</contentRule>
 		</file>
 	</files>

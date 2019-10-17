@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <reportConfig>
 	<name>Changed Concept Definition</name>
-	<inputFile>STATEDROOTDESC</inputFile>
+	<inputFile>INFERREDROOTDESC</inputFile>
 	<inputFile>CONCEPTS</inputFile>
 	<inputFile>CONCEPTS_PREVIOUS</inputFile>
-	<inputFile>STATEDRELS</inputFile>
+	<inputFile>OWLEXPRESS</inputFile>
 	<inputFile>RELATIONSHIPS</inputFile>
-	<inputFile>TCLOSURESTATED</inputFile>
+	<inputFile>TCLOSUREINFERRED</inputFile>
 	<storedProcedure>
 		<name>createChangedConceptDefinitionStatistics(?)</name>
 		<param><name>releaseDate</name><order>1</order><sqlType>INT</sqlType></param>
