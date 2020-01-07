@@ -14,7 +14,8 @@ package com.termmed.utils;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 // TODO: Auto-generated Javadoc
@@ -24,7 +25,7 @@ import org.apache.log4j.Logger;
 public class ConversionSnapshotDelta {
 
 	/** The Constant log. */
-	private static final Logger log = Logger.getLogger(ConversionSnapshotDelta.class);
+	private static final Logger log = LogManager.getLogger(ConversionSnapshotDelta.class);
 
 	/**
 	 * Snapshot file.

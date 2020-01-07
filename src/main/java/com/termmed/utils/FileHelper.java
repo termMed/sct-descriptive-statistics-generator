@@ -32,7 +32,9 @@ import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -41,7 +43,7 @@ import org.apache.log4j.Logger;
 public class FileHelper {
 	
 	/** The Constant log. */
-	private static final Logger log = Logger.getLogger(FileHelper.class);
+	private static final Logger log = LogManager.getLogger(FileHelper.class.getName());
 	
 
 	/**
@@ -590,7 +592,7 @@ public class FileHelper {
 
 class FileNameComparator implements Comparator<String>{
 
-	private static final Logger log = Logger.getLogger(FileNameComparator.class);
+	private static final Logger log = LogManager.getLogger(FileNameComparator.class.getName());
 	private int fieldToCompare;
 	private String separator;
 	

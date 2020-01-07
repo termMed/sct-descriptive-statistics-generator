@@ -29,7 +29,8 @@ import java.util.List;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.termmed.fileprovider.CurrentFile;
 import com.termmed.fileprovider.DependentFile;
@@ -466,7 +467,7 @@ public class ImportManager {
 	 * @param changedPreviousDate the changed previous date
 	 */
 	public ImportManager(Connection con, File file, boolean changedDate, boolean changedPreviousDate) {
-		logger = Logger.getLogger("com.termmed.statistics.db.importer.ImportManager");
+		logger = LogManager.getLogger("com.termmed.statistics.db.importer.ImportManager");
 		this.connection=con;
 		this.configFile=file;
 		this.changedDate=changedDate;

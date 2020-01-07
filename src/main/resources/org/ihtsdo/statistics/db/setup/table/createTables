@@ -226,12 +226,12 @@ defStatus tinyint );
 
 drop table if exists  FSNCH;
 create table FSNCH (id bigint ,
- term varchar(522),
+ term varchar(1048),
 did bigint );
 
 drop table if exists  prefCh;
 create table prefCh (id bigint ,
- term varchar(522),
+ term varchar(1048),
 did bigint );
   
 drop table if exists  ANYCH;
@@ -325,7 +325,7 @@ DROP TABLE if exists cpttable7_details;
 CREATE TABLE cpttable7_details (
 		ANCESTOR VARCHAR(512),
 		ID BIGINT,
-		TERM VARCHAR(522),
+		TERM VARCHAR(1048),
 		CHANGETYPE VARCHAR(50),
 		DID BIGINT,
 		PRIORITY TINYINT

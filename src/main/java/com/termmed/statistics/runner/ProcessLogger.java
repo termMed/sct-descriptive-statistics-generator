@@ -11,11 +11,11 @@
  * Author: Alejandro Rodriguez
  */
 package com.termmed.statistics.runner;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.apache.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 public class ProcessLogger {
 	
 	/** The logger. */
-	private static Logger logger = Logger.getLogger(ProcessLogger.class);
+	private static Logger logger = LogManager.getLogger(ProcessLogger.class.getName());
     
     /** The date formatter. */
     final private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
