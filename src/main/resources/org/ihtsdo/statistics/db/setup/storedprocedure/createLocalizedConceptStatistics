@@ -18,8 +18,8 @@ where not exists (
 	and d.active=1 ;
 
 
-select count(*) into totCpt
-from actConcepts c;
+-- select count(*) into totCpt
+-- from actConcepts c;
 
 truncate table newConcepts;
 
@@ -37,7 +37,7 @@ where not exists (
 	and d.active=1;
 	
 	
-select count(*) 
+select count(*)
 into newCpts
 from newConcepts;
 
@@ -47,14 +47,10 @@ insert into cptRootLevel_table6
 values ( 138875005, 'SNOMED CT Concept (SNOMED RT+CTV3)' , cast(0 as integer) , cast(0 as decimal(5,2)) 
 ,cast(0 as integer) , cast(0 as decimal(5,2)));
 
-Update cptRootLevel_table6 
-set TotalLocalized=totCpt ;
 
 Update cptRootLevel_table6 
 set PercentOfHTotal=100;
 
-Update cptRootLevel_table6 
-set NewLocConcepts=newCpts;
 
 Update cptRootLevel_table6 
 set PercentOfNewLocTotal=100 ;
@@ -94,5 +90,12 @@ Update cptFirstLevel_table6
 set PercentOfNewLocTotal=(convert(100, decimal(16,2)) * NewLocConcepts/newCpts);
 
 end if;
+
+select sum(TotalLocalized) into totCpt from cptFirstLevel_table6;
+select sum(NewLocConcepts) into newCpts from cptFirstLevel_table6;
+
+Update cptRootLevel_table6
+set TotalLocalized=totCpt,
+    NewLocConcepts=newCpts ;
 
 END
